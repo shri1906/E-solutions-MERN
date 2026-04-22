@@ -1,0 +1,41 @@
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import Footer from "./layout/Footer";
+import Home from "./pages/Home";
+import Navbar from "./layout/Navbar";
+import About from "./pages/About";
+import Features from "./pages/Features";
+import Contact from "./pages/Contact";
+import Products from "./pages/Products";
+import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+
+function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/who-we-are" element={<About />} />
+          <Route path="/what-we-do" element={<Features />} />
+          <Route path="/contact-us" element={<Contact />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        </Routes>
+        <Footer />
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;
