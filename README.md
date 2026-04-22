@@ -1,4 +1,4 @@
-# Gauri E-Solutions - E-commerce Platform
+# Gauri E-Solutions 
 
 A full-stack e-commerce application built with React, Node.js, Express, MongoDB, and Razorpay payment integration.
 
@@ -445,8 +445,5 @@ For testing, use Razorpay test mode credentials:
 
 For issues or questions:
 - Create an issue in the repository
-- Contact: support@gauriesolutions.com
+- Contact: shivam062.soi@gmail.com
 
-## License
-
-MIT License - feel free to use this project for learning and commercial purposes.
