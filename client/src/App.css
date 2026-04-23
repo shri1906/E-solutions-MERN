@@ -3,6 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  padding: 10px;
   background: rgba(5, 11, 24, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -10,7 +11,7 @@
 }
 
 .navbar-brand-custom img {
-  height: 90px;
+  height: 70px;
   width:180px;
   filter: brightness(1.1);
 }
@@ -151,7 +152,7 @@
   font-weight: 700;
   font-size: 0.9rem;
   letter-spacing: 0.03em;
-  padding: 0.85rem 2rem;
+  padding: 0.85rem 1rem;
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -623,7 +624,7 @@
   height: 100%;
 }
 
-.contact-logo { height: 90px; margin-bottom: 2rem; }
+.contact-logo { height: 100px; margin-bottom: 2rem; }
 
 .contact-item {
   display: flex;

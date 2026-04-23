@@ -63,7 +63,7 @@ const Products = () => {
   return (
     <div className="min-vh-100 bg-light">
       {/* Header */}
-      <div className="bg-primary text-white py-2">
+      <div className="py-4">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
@@ -75,7 +75,7 @@ const Products = () => {
 
             <button
               onClick={() => setShowCart(!showCart)}
-              className="btn btn-light position-relative fw-semibold"
+              className="btn btn-primary position-relative fw-semibold"
             >
               🛒 Cart ({getCartCount()})
               {getCartCount() > 0 && (

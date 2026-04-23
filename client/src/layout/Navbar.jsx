@@ -13,10 +13,6 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const isAdmin = user?.role === 'admin';
-
-  // 🔥 THIS HIDES NAVBAR COMPLETELY FOR ADMIN
-  if (isAdmin) return null;
 
   return (
     <nav className="navbar-custom">

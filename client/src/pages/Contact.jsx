@@ -31,11 +31,11 @@ const ContactUs = () => {
           </p>
         </div>
 
-        <div className="row g-4 align-items-start">
+        <div className="row g-4 align-items-start rounded p-4 shadow-lg ">
           {/* Info card */}
           <div className="col-md-5">
             <div className="contact-info-card" >
-              <img src="/logo-rs.png" alt="Gauri E-Solutions" className="contact-logo" />
+              <img src="/gauri.png" alt="Gauri E-Solutions" className="contact-logo" />
 
               <div className="contact-item">
                 <div className="contact-item-icon"><i className="fa-solid fa-envelope"></i></div>
