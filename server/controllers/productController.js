@@ -36,29 +36,34 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
+    console.log("RAW BODY:", req.body);
+    console.log("FEATURES TYPE:", typeof req.body.features);
+    console.log("FEATURES VALUE:", req.body.features);
 
-    const {
-      name,
-      description,
-      category,
-      isAvailable,
-    } = req.body;
+    const { name, description, category, isAvailable } = req.body;
 
     const price = parseFloat(req.body.price);
     const stock = parseInt(req.body.stock);
 
     const image = req.file ? `/uploads/${req.file.filename}` : "";
+    const isAvailableBool = req.body.isAvailable === "true";
 
-    // ✅ FIX features
-    const features = req.body["features[]"]
-      ? Array.isArray(req.body["features[]"])
-        ? req.body["features[]"]
-        : [req.body["features[]"]]
-      : [];
+    let features = {};
 
-    // ✅ FIX specifications
+    if (req.body.features) {
+      try {
+        const parsed = JSON.parse(req.body.features);
+
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          features = parsed;
+        } else {
+          console.log("❌ Features is not a valid object");
+        }
+      } catch (err) {
+        console.log("❌ Features JSON parse error:", err);
+      }
+    }
+
     const specifications = req.body.specifications
       ? JSON.parse(req.body.specifications)
       : {};
@@ -70,35 +75,43 @@ const createProduct = async (req, res) => {
       category,
       image,
       stock,
-      isAvailable,
+      isAvailable: isAvailableBool,
       features,
       specifications,
     });
 
     res.status(201).json(product);
-
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
 
 const updateProduct = async (req, res) => {
   try {
+    console.log("RAW BODY:", req.body);
+    console.log("FEATURES TYPE:", typeof req.body.features);
+    console.log("FEATURES VALUE:", req.body.features);
     const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-
+    const isAvailableBool = req.body.isAvailable === "true";
     const image = req.file ? `/uploads/${req.file.filename}` : product.image;
 
-    const features = req.body["features[]"]
-      ? Array.isArray(req.body["features[]"])
-        ? req.body["features[]"]
-        : [req.body["features[]"]]
-      : product.features;
+    let features = product.features;
 
+    if (req.body.features) {
+      try {
+        const parsed = JSON.parse(req.body.features);
+
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          features = parsed;
+        }
+      } catch (err) {
+        console.log("❌ Features JSON parse error:", err);
+      }
+    }
     const specifications = req.body.specifications
       ? JSON.parse(req.body.specifications)
       : product.specifications;
@@ -119,7 +132,6 @@ const updateProduct = async (req, res) => {
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

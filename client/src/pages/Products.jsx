@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { productAPI } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.BASE_URL;
 
 const Products = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const Products = () => {
       setLoading(false);
     }
   };
-
+  console.log(products);
   const handleAddToCart = (product) => {
     if (!isAuthenticated()) {
       // Redirect to login with return path
@@ -122,10 +123,13 @@ const Products = () => {
               <div key={product._id} className="col-md-6 col-lg-4">
                 <div className="card h-100 shadow-sm border-0 product-card">
                   {/* Image */}
-                  <div
-                    className="card-img-top position-relative product-img"
-                    style={{ backgroundImage: `url(${product.image})` }}
-                  >
+                  <div className="card-img-top position-relative product-img">
+                    <img
+                      src={`http://localhost:5000${product.image}`}
+                      alt={product.name}
+                      className="card-img-top"
+                      style={{ height: "200px", objectFit: "cover" }}
+                    />
                     <span className="badge bg-primary position-absolute top-0 end-0 m-2">
                       {product.category}
                     </span>

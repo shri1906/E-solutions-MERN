@@ -1,50 +1,56 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 /* ================= COMMON REQUEST ================= */
-const apiRequest = async (endpoint, method = "GET", data = null, isAdmin = false) => {
+const apiRequest = async (
+  endpoint,
+  method = "GET",
+  data = null,
+  isAdmin = false,
+) => {
   const token = isAdmin
     ? localStorage.getItem("adminToken")
     : localStorage.getItem("userToken");
 
   const headers = {
-    ...(token && { Authorization: `Bearer ${token}` })
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
 
-  let body;
-
-  // ✅ Handle FormData vs JSON automatically
-  if (data instanceof FormData) {
-    body = data;
-  } else if (data) {
+  // ✅ Handle FormData vs JSON
+  if (!(data instanceof FormData) && data) {
     headers["Content-Type"] = "application/json";
-    body = JSON.stringify(data);
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    method,
-    headers,
-    body
-  });
+  try {
+    const response = await axios({
+      url: `${API_URL}${endpoint}`,
+      method,
+      headers,
+      data, // axios handles both JSON & FormData automatically
+      withCredentials: true,
+    });
 
-  return response.json();
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "An error occurred";
+    throw new Error(errorMessage);
+  }
 };
 
 /* ================= USER APIs ================= */
 export const userAPI = {
-  register: (userData) =>
-    apiRequest("/users/register", "POST", userData),
+  register: (userData) => apiRequest("/users/register", "POST", userData),
 
   login: (email, password) =>
     apiRequest("/users/login", "POST", { email, password }),
 
-  getProfile: () =>
-    apiRequest("/users/profile"),
+  getProfile: () => apiRequest("/users/profile"),
 
-  updateProfile: (userData) =>
-    apiRequest("/users/profile", "PUT", userData),
+  updateProfile: (userData) => apiRequest("/users/profile", "PUT", userData),
 
-  getOrders: () =>
-    apiRequest("/users/orders")
+  getOrders: () => apiRequest("/users/orders"),
 };
 
 /* ================= ADMIN APIs ================= */
@@ -55,8 +61,7 @@ export const adminAPI = {
   register: (username, email, password) =>
     apiRequest("/admin/register", "POST", { username, email, password }),
 
-  getProfile: () =>
-    apiRequest("/admin/profile", "GET", null, true)
+  getProfile: () => apiRequest("/admin/profile", "GET", null, true),
 };
 
 /* ================= PRODUCT APIs ================= */
@@ -66,21 +71,18 @@ export const productAPI = {
     return apiRequest(`/products?${params}`);
   },
 
-  getById: (id) =>
-    apiRequest(`/products/${id}`),
+  getById: (id) => apiRequest(`/products/${id}`),
 
-  // ✅ Supports FormData (image upload)
-  create: (productData) =>
-    apiRequest("/products", "POST", productData, true),
+  // ✅ FILE UPLOAD SUPPORT
+  create: (productData) => apiRequest("/products", "POST", productData, true),
 
   update: (id, productData) =>
     apiRequest(`/products/${id}`, "PUT", productData, true),
 
-  delete: (id) =>
-    apiRequest(`/products/${id}`, "DELETE", null, true),
+  delete: (id) => apiRequest(`/products/${id}`, "DELETE", null, true),
 
   toggleAvailability: (id) =>
-    apiRequest(`/products/${id}/availability`, "PATCH", null, true)
+    apiRequest(`/products/${id}/availability`, "PATCH", null, true),
 };
 
 /* ================= ORDER APIs ================= */
@@ -91,15 +93,12 @@ export const orderAPI = {
   verifyPayment: (paymentData) =>
     apiRequest("/orders/verify-payment", "POST", paymentData),
 
-  create: (orderData) =>
-    apiRequest("/orders", "POST", orderData),
+  create: (orderData) => apiRequest("/orders", "POST", orderData),
 
-  getAll: () =>
-    apiRequest("/orders", "GET", null, true),
+  getAll: () => apiRequest("/orders", "GET", null, true),
 
-  getById: (id) =>
-    apiRequest(`/orders/${id}`),
+  getById: (id) => apiRequest(`/orders/${id}`),
 
   updateStatus: (id, orderStatus) =>
-    apiRequest(`/orders/${id}/status`, "PUT", { orderStatus }, true)
+    apiRequest(`/orders/${id}/status`, "PUT", { orderStatus }, true),
 };

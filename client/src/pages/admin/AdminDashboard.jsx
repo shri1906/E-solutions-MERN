@@ -56,7 +56,7 @@ const AdminDashboard = () => {
       const data = await productAPI.getAll();
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      alert("Error fetching products: " + error.message);
     }
   };
 
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
       const data = await orderAPI.getAll();
       setOrders(data);
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      alert("Error fetching orders: " + error.message);
     }
   };
 
@@ -99,22 +99,38 @@ const AdminDashboard = () => {
       formData.append("stock", parseInt(productForm.stock));
       formData.append("isAvailable", productForm.isAvailable);
 
-      // image file
       if (productForm.image instanceof File) {
         formData.append("image", productForm.image);
       }
 
-      // features
+      const featuresObject = {};
+
       productForm.features
         ?.split("\n")
-        .filter((f) => f.trim())
-        .forEach((f) => formData.append("features[]", f));
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+        .forEach((line, index) => {
+          featuresObject[`feature${index + 1}`] = line;
+        });
 
-      // specifications
-      formData.append(
-        "specifications",
-        productForm.specifications ? productForm.specifications : "{}",
-      );
+      formData.append("features", JSON.stringify(featuresObject));
+
+      const specsObject = {};
+
+      productForm.specifications
+        ?.split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0 && line.includes(":"))
+        .forEach((line) => {
+          const [key, ...rest] = line.split(":");
+          specsObject[key.trim()] = rest.join(":").trim();
+        });
+
+      formData.append("specifications", JSON.stringify(specsObject));
+
+      for (let [key, value] of formData.entries()) {
+        console.log(`  ${key}:`, value);
+      }
 
       if (editingProduct) {
         await productAPI.update(editingProduct._id, formData);
@@ -134,6 +150,7 @@ const AdminDashboard = () => {
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
+
     setProductForm({
       name: product.name,
       description: product.description,
@@ -142,13 +159,18 @@ const AdminDashboard = () => {
       image: null,
       stock: product.stock,
       isAvailable: product.isAvailable,
-      features: product.features?.join("\n") || "",
-      specifications: JSON.stringify(
-        Object.fromEntries(product.specifications || new Map()),
-        null,
-        2,
-      ),
+      features: product.features
+        ? Object.entries(product.features)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n")
+        : "",
+      specifications: product.specifications
+        ? Object.entries(product.specifications)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n")
+        : "",
     });
+
     setShowProductModal(true);
   };
 
@@ -459,6 +481,32 @@ const AdminDashboard = () => {
                       />
                     </div>
 
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Features (one per line)
+                      </label>
+                      <textarea
+                        name="features"
+                        value={productForm.features}
+                        onChange={handleProductFormChange}
+                        className="form-control"
+                        rows="3"
+                        placeholder={`Feature 1\nFeature 2\nFeature 3`}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">
+                        Specifications (one per line)
+                      </label>
+                      <textarea
+                        name="specifications"
+                        value={productForm.specifications}
+                        onChange={handleProductFormChange}
+                        className="form-control"
+                        rows="3"
+                        placeholder={`RAM: 8GB\nStorage: 256GB\nProcessor: i5`}
+                      />
+                    </div>
                     <div className="col-md-6 mb-3">
                       <label className="form-label">Stock *</label>
                       <input

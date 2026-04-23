@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const connectDB = require('./config/db.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const productRoutes = require('./routes/productRoutes.js');
@@ -16,6 +18,11 @@ connectDB();
 
 const app = express();
 
+const uploadDir = path.join(__dirname, '../public/uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log('✅ Uploads directory created');
+}
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',

@@ -34,9 +34,10 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  features: [{
-    type: String
-  }],
+  features:  {
+    type: Map,
+    of: String
+  },
   specifications: {
     type: Map,
     of: String
