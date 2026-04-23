@@ -1,58 +1,58 @@
-import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { userAPI } from '../utils/api';
+import { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { userAPI } from "../utils/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  
+
   const [isLogin, setIsLogin] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   const [registerForm, setRegisterForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    street: '',
-    city: '',
-    state: '',
-    pincode: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    pincode: "",
   });
 
-  const from = location.state?.from?.pathname || '/products';
+  const from = location.state?.from?.pathname || "/products";
 
   const handleLoginChange = (e) => {
     setLoginForm({
       ...loginForm,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleRegisterChange = (e) => {
     setRegisterForm({
       ...registerForm,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       const data = await userAPI.login(loginForm.email, loginForm.password);
-      
+
       if (data.token) {
         login(data);
         navigate(from, { replace: true });
@@ -60,7 +60,7 @@ const Login = () => {
         setError(data.message);
       }
     } catch (error) {
-      setError('Login failed. Please try again.');
+      setError(error.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -68,15 +68,15 @@ const Login = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (registerForm.password !== registerForm.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (registerForm.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
@@ -93,12 +93,12 @@ const Login = () => {
           city: registerForm.city,
           state: registerForm.state,
           pincode: registerForm.pincode,
-          country: 'India'
-        }
+          country: "India",
+        },
       };
 
       const data = await userAPI.register(userData);
-      
+
       if (data.token) {
         login(data);
         navigate(from, { replace: true });
@@ -106,343 +106,298 @@ const Login = () => {
         setError(data.message);
       }
     } catch (error) {
-      setError('Registration failed. Please try again.');
+      setError(error.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      padding: '1rem 0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
+    <div className="d-flex align-items-center justify-content-center py-4 bg-light">
       <div className="container">
-        <div style={{
-          maxWidth: '900px',
-          margin: '0 auto',
-          background: 'white',
-          borderRadius: '16px',
-          overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-        }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isLogin ? '1fr' : '1fr', gap: 0 }}>
-            {/* Login/Register Form */}
-            <div style={{ padding: '3rem' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#333', marginBottom: '0.5rem' }}>
-                  {isLogin ? 'Welcome Back' : 'Create Account'}
+        <div
+          className="mx-auto shadow-lg rounded-4 overflow-hidden bg-white"
+          style={{ maxWidth: "450px" }}
+        >
+          <div className="row g-0">
+            <div className="col-12 p-5">
+              {/* Header */}
+              <div className="text-center mb-4">
+                <h1 className="fw-bold">
+                  {isLogin ? "Welcome Back" : "Create Account"}
                 </h1>
-                <p style={{ color: '#666' }}>
-                  {isLogin ? 'Sign in to continue shopping' : 'Register to start shopping'}
+                <p className="text-muted">
+                  {isLogin
+                    ? "Sign in to continue shopping"
+                    : "Register to start shopping"}
                 </p>
               </div>
 
+              {/* Error */}
               {error && (
-                <div style={{
-                  padding: '0.8rem',
-                  background: '#fee2e2',
-                  color: '#dc2626',
-                  borderRadius: '8px',
-                  marginBottom: '1.5rem',
-                  textAlign: 'center'
-                }}>
-                  {error}
-                </div>
+                <div className="alert alert-danger text-center">{error}</div>
               )}
 
+              {/* LOGIN FORM */}
               {isLogin ? (
                 <form onSubmit={handleLoginSubmit}>
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={loginForm.email}
-                      onChange={handleLoginChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '0.9rem',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '8px',
-                        fontSize: '1rem'
-                      }}
-                    />
+                  {/* Email */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">Email</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-envelope"></i>
+                      </span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={loginForm.email}
+                        onChange={handleLoginChange}
+                        required
+                        className="form-control"
+                        placeholder="Enter your email"
+                      />
+                    </div>
                   </div>
 
-                  <div style={{ marginBottom: '2rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={loginForm.password}
-                      onChange={handleLoginChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '0.9rem',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '8px',
-                        fontSize: '1rem'
-                      }}
-                    />
+                  {/* Password */}
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">Password</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-lock"></i>
+                      </span>
+                      <input
+                        type="password"
+                        name="password"
+                        value={loginForm.password}
+                        onChange={handleLoginChange}
+                        required
+                        className="form-control"
+                        placeholder="Enter your password"
+                      />
+                    </div>
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      background: loading ? '#9ca3af' : '#667eea',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '1.1rem',
-                      fontWeight: '600',
-                      cursor: loading ? 'not-allowed' : 'pointer'
-                    }}
+                    className="btn btn-primary w-100"
                   >
-                    {loading ? 'Signing in...' : 'Sign In'}
+                    {loading ? "Signing in..." : "Sign In"}
                   </button>
                 </form>
               ) : (
+                /* REGISTER FORM */
                 <form onSubmit={handleRegisterSubmit}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        Full Name *
-                      </label>
+                  {/* Full Name */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      Full Name *
+                    </label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-user"></i>
+                      </span>
                       <input
                         type="text"
                         name="name"
                         value={registerForm.name}
                         onChange={handleRegisterChange}
                         required
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter your full name"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        Phone *
-                      </label>
+                  {/* Phone */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">Phone *</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-phone"></i>
+                      </span>
                       <input
                         type="tel"
                         name="phone"
                         value={registerForm.phone}
                         onChange={handleRegisterChange}
                         required
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter your phone number"
                       />
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={registerForm.email}
-                      onChange={handleRegisterChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '0.8rem',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '8px',
-                        fontSize: '1rem'
-                      }}
-                    />
+                  {/* Email */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">Email *</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-envelope"></i>
+                      </span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={registerForm.email}
+                        onChange={handleRegisterChange}
+                        required
+                        className="form-control"
+                        placeholder="Enter your email"
+                      />
+                    </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        Password *
-                      </label>
+                  {/* Password */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">Password *</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-lock"></i>
+                      </span>
                       <input
                         type="password"
                         name="password"
                         value={registerForm.password}
                         onChange={handleRegisterChange}
                         required
-                        minLength={6}
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter password"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        Confirm Password *
-                      </label>
+                  {/* Confirm Password */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      Confirm Password *
+                    </label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-lock"></i>
+                      </span>
                       <input
                         type="password"
                         name="confirmPassword"
                         value={registerForm.confirmPassword}
                         onChange={handleRegisterChange}
                         required
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Confirm password"
                       />
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
+                  {/* Street */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
                       Street Address
                     </label>
-                    <input
-                      type="text"
-                      name="street"
-                      value={registerForm.street}
-                      onChange={handleRegisterChange}
-                      style={{
-                        width: '100%',
-                        padding: '0.8rem',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '8px',
-                        fontSize: '1rem'
-                      }}
-                    />
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-road"></i>
+                      </span>
+                      <input
+                        type="text"
+                        name="street"
+                        value={registerForm.street}
+                        onChange={handleRegisterChange}
+                        className="form-control"
+                        placeholder="Enter street address"
+                      />
+                    </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        City
-                      </label>
+                  {/* City */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">City</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-city"></i>
+                      </span>
                       <input
                         type="text"
                         name="city"
                         value={registerForm.city}
                         onChange={handleRegisterChange}
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter city"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        State
-                      </label>
+                  {/* State */}
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">State</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-map"></i>
+                      </span>
                       <input
                         type="text"
                         name="state"
                         value={registerForm.state}
                         onChange={handleRegisterChange}
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter state"
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#333' }}>
-                        Pincode
-                      </label>
+                  {/* Pincode */}
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold">Pincode</label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-mail-bulk"></i>
+                      </span>
                       <input
                         type="text"
                         name="pincode"
                         value={registerForm.pincode}
                         onChange={handleRegisterChange}
-                        style={{
-                          width: '100%',
-                          padding: '0.8rem',
-                          border: '2px solid #e5e7eb',
-                          borderRadius: '8px',
-                          fontSize: '1rem'
-                        }}
+                        className="form-control"
+                        placeholder="Enter pincode"
                       />
                     </div>
                   </div>
 
+                  {/* Submit */}
                   <button
                     type="submit"
                     disabled={loading}
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      background: loading ? '#9ca3af' : '#667eea',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '1.1rem',
-                      fontWeight: '600',
-                      cursor: loading ? 'not-allowed' : 'pointer'
-                    }}
+                    className="btn btn-primary w-100"
                   >
-                    {loading ? 'Creating Account...' : 'Create Account'}
+                    {loading ? "Creating Account..." : "Create Account"}
                   </button>
                 </form>
               )}
 
-              <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                <p style={{ color: '#666' }}>
-                  {isLogin ? "Don't have an account? " : "Already have an account? "}
+              {/* Toggle */}
+              <div className="text-center mt-4">
+                <p className="text-muted">
+                  {isLogin
+                    ? "Don't have an account? "
+                    : "Already have an account? "}
                   <button
                     onClick={() => {
                       setIsLogin(!isLogin);
-                      setError('');
+                      setError("");
                     }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#667eea',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      textDecoration: 'underline'
-                    }}
+                    className="btn btn-link p-0 fw-semibold"
                   >
-                    {isLogin ? 'Register' : 'Sign In'}
+                    {isLogin ? "Register" : "Sign In"}
                   </button>
                 </p>
               </div>
 
-              <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-                <Link to="/products" style={{ color: '#666', fontSize: '0.9rem', textDecoration: 'none' }}>
+              {/* Back */}
+              <div className="text-center mt-2">
+                <Link
+                  to="/products"
+                  className="text-muted small text-decoration-none"
+                >
                   ← Back to Products
                 </Link>
               </div>

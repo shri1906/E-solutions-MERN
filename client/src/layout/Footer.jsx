@@ -5,8 +5,8 @@ const Footer = () => {
       <div className="container">
         <div className="row g-4">
           <div className="col-md-6">
-            <img src="/logo-rs.png" alt="Gauri E-Solutions" className="footer-logo" />
-            <p className="footer-address ">
+            <img src="/gauri.png" alt="Gauri E-Solutions" className="footer-logo" />
+            <p className="footer-address px-4">
               <i className="fa-solid fa-location-dot me-2" style={{color:'var(--accent)'}}></i>
               120, Karanpur, Near Survey Chowk<br />
               Dehradun – 248001, India

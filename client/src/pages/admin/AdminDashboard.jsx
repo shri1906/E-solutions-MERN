@@ -163,491 +163,330 @@ const AdminDashboard = () => {
     });
   };
 
-  return (
-    <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
-      {/* Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '1.5rem 0'
-      }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold', margin: 0 }}>Admin Dashboard</h1>
-          <button onClick={handleLogout} style={{
-            padding: '0.6rem 1.2rem',
-            background: 'rgba(255,255,255,0.2)',
-            color: 'white',
-            border: '1px solid white',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600'
-          }}>
-            Logout
-          </button>
-        </div>
-      </div>
+ return (
+  <div className="min-vh-100 bg-light">
 
-      <div className="container" style={{ padding: '2rem 0' }}>
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '2px solid #e5e7eb' }}>
+    {/* HEADER */}
+    <div className="bg-primary text-white py-3">
+      <div className="container d-flex justify-content-between align-items-center">
+        <h1 className="h4 fw-bold mb-0">Admin Dashboard</h1>
+        <button onClick={handleLogout} className="btn btn-outline-light">
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <div className="container py-4">
+
+      {/* TABS */}
+      <ul className="nav nav-tabs mb-4">
+        <li className="nav-item">
           <button
+            className={`nav-link ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
-            style={{
-              padding: '1rem 2rem',
-              background: 'none',
-              border: 'none',
-              borderBottom: activeTab === 'products' ? '3px solid #667eea' : 'none',
-              color: activeTab === 'products' ? '#667eea' : '#666',
-              fontWeight: '600',
-              fontSize: '1rem',
-              cursor: 'pointer'
-            }}
           >
             Products ({products.length})
           </button>
+        </li>
+        <li className="nav-item">
           <button
+            className={`nav-link ${activeTab === 'orders' ? 'active' : ''}`}
             onClick={() => setActiveTab('orders')}
-            style={{
-              padding: '1rem 2rem',
-              background: 'none',
-              border: 'none',
-              borderBottom: activeTab === 'orders' ? '3px solid #667eea' : 'none',
-              color: activeTab === 'orders' ? '#667eea' : '#666',
-              fontWeight: '600',
-              fontSize: '1rem',
-              cursor: 'pointer'
-            }}
           >
             Orders ({orders.length})
           </button>
-        </div>
+        </li>
+      </ul>
 
-        {/* Products Tab */}
-        {activeTab === 'products' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>Manage Products</h2>
-              <button
-                onClick={() => {
-                  resetProductForm();
-                  setShowProductModal(true);
-                }}
-                style={{
-                  padding: '0.8rem 1.5rem',
-                  background: '#667eea',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
-              >
-                + Add Product
-              </button>
-            </div>
-
-            <div style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: '#f8f9fa', borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Product</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Category</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Price</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Stock</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Status</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                          <div style={{
-                            width: '50px',
-                            height: '50px',
-                            background: `url(${product.image}) center/cover`,
-                            backgroundColor: '#f0f0f0',
-                            borderRadius: '6px'
-                          }} />
-                          <span style={{ fontWeight: '600' }}>{product.name}</span>
-                        </div>
-                      </td>
-                      <td style={{ padding: '1rem' }}>{product.category}</td>
-                      <td style={{ padding: '1rem', fontWeight: '600' }}>₹{product.price}</td>
-                      <td style={{ padding: '1rem' }}>{product.stock}</td>
-                      <td style={{ padding: '1rem' }}>
-                        <span style={{
-                          padding: '0.3rem 0.8rem',
-                          borderRadius: '20px',
-                          fontSize: '0.85rem',
-                          fontWeight: '600',
-                          background: product.isAvailable ? '#d1fae5' : '#fee2e2',
-                          color: product.isAvailable ? '#059669' : '#dc2626'
-                        }}>
-                          {product.isAvailable ? 'Available' : 'Unavailable'}
-                        </span>
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <button
-                            onClick={() => handleEditProduct(product)}
-                            style={{
-                              padding: '0.4rem 0.8rem',
-                              background: '#3b82f6',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              fontSize: '0.85rem',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleToggleAvailability(product._id)}
-                            style={{
-                              padding: '0.4rem 0.8rem',
-                              background: product.isAvailable ? '#f59e0b' : '#10b981',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              fontSize: '0.85rem',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {product.isAvailable ? 'Hide' : 'Show'}
-                          </button>
-                          <button
-                            onClick={() => handleDeleteProduct(product._id)}
-                            style={{
-                              padding: '0.4rem 0.8rem',
-                              background: '#ef4444',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              fontSize: '0.85rem',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Orders Tab */}
-        {activeTab === 'orders' && (
-          <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '2rem' }}>Manage Orders</h2>
-            
-            <div style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: '#f8f9fa', borderBottom: '2px solid #e5e7eb' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Order ID</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Customer</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Items</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Total</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Payment</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Status</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map(order => (
-                    <tr key={order._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '1rem', fontWeight: '600' }}>{order.orderId}</td>
-                      <td style={{ padding: '1rem' }}>
-                        <div>{order.customerInfo.name}</div>
-                        <div style={{ fontSize: '0.85rem', color: '#666' }}>{order.customerInfo.email}</div>
-                      </td>
-                      <td style={{ padding: '1rem' }}>{order.items.length} items</td>
-                      <td style={{ padding: '1rem', fontWeight: '600' }}>₹{order.totalAmount.toLocaleString()}</td>
-                      <td style={{ padding: '1rem' }}>
-                        <span style={{
-                          padding: '0.3rem 0.8rem',
-                          borderRadius: '20px',
-                          fontSize: '0.85rem',
-                          fontWeight: '600',
-                          background: order.paymentInfo.paymentStatus === 'completed' ? '#d1fae5' : '#fef3c7',
-                          color: order.paymentInfo.paymentStatus === 'completed' ? '#059669' : '#d97706'
-                        }}>
-                          {order.paymentInfo.paymentStatus}
-                        </span>
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        <select
-                          value={order.orderStatus}
-                          onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
-                          style={{
-                            padding: '0.4rem 0.8rem',
-                            border: '1px solid #ddd',
-                            borderRadius: '6px',
-                            fontSize: '0.9rem'
-                          }}
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="confirmed">Confirmed</option>
-                          <option value="processing">Processing</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
-                          <option value="cancelled">Cancelled</option>
-                        </select>
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        <button
-                          onClick={() => alert(JSON.stringify(order, null, 2))}
-                          style={{
-                            padding: '0.4rem 0.8rem',
-                            background: '#6366f1',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '0.85rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Product Modal */}
-      {showProductModal && (
+      {activeTab === 'products' && (
         <>
-          <div onClick={() => setShowProductModal(false)} style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 999
-          }} />
-          <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '90%',
-            maxWidth: '600px',
-            maxHeight: '90vh',
-            overflowY: 'auto',
-            background: 'white',
-            borderRadius: '12px',
-            padding: '2rem',
-            zIndex: 1000
-          }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-              {editingProduct ? 'Edit Product' : 'Add New Product'}
-            </h2>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h2 className="h5 fw-bold mb-0">Manage Products</h2>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                resetProductForm();
+                setShowProductModal(true);
+              }}
+            >
+              + Add Product
+            </button>
+          </div>
 
-            <form onSubmit={handleSubmitProduct}>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Product Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={productForm.name}
-                  onChange={handleProductFormChange}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
+          <div className="table-responsive bg-white rounded shadow-sm">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Description *</label>
-                <textarea
-                  name="description"
-                  value={productForm.description}
-                  onChange={handleProductFormChange}
-                  required
-                  rows="3"
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '1rem',
-                    fontFamily: 'inherit'
-                  }}
-                />
-              </div>
+              <tbody>
+                {products.map(product => (
+                  <tr key={product._id}>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Price *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={productForm.price}
-                    onChange={handleProductFormChange}
-                    required
-                    min="0"
-                    step="0.01"
-                    style={{
-                      width: '100%',
-                      padding: '0.8rem',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                      fontSize: '1rem'
-                    }}
-                  />
-                </div>
+                    <td>
+                      <div className="d-flex align-items-center gap-3">
+                        <div
+                          className="product-img-sm"
+                          style={{ backgroundImage: `url(${product.image})` }}
+                        />
+                        <span className="fw-semibold">{product.name}</span>
+                      </div>
+                    </td>
 
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Stock *</label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={productForm.stock}
-                    onChange={handleProductFormChange}
-                    required
-                    min="0"
-                    style={{
-                      width: '100%',
-                      padding: '0.8rem',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                      fontSize: '1rem'
-                    }}
-                  />
-                </div>
-              </div>
+                    <td>{product.category}</td>
+                    <td className="fw-semibold">₹{product.price}</td>
+                    <td>{product.stock}</td>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Category *</label>
-                <select
-                  name="category"
-                  value={productForm.category}
-                  onChange={handleProductFormChange}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '1rem'
-                  }}
-                >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
+                    <td>
+                      <span className={`badge ${
+                        product.isAvailable ? 'bg-success' : 'bg-danger'
+                      }`}>
+                        {product.isAvailable ? 'Available' : 'Unavailable'}
+                      </span>
+                    </td>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Image URL</label>
-                <input
-                  type="text"
-                  name="image"
-                  value={productForm.image}
-                  onChange={handleProductFormChange}
-                  placeholder="https://example.com/image.jpg"
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
+                    <td>
+                      <div className="btn-group btn-group-sm">
+                        <button
+                          onClick={() => handleEditProduct(product)}
+                          className="btn btn-primary"
+                        >
+                          Edit
+                        </button>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                  Features (one per line)
-                </label>
-                <textarea
-                  name="features"
-                  value={productForm.features}
-                  onChange={handleProductFormChange}
-                  rows="3"
-                  placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
-                  style={{
-                    width: '100%',
-                    padding: '0.8rem',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '1rem',
-                    fontFamily: 'monospace'
-                  }}
-                />
-              </div>
+                        <button
+                          onClick={() => handleToggleAvailability(product._id)}
+                          className={`btn ${
+                            product.isAvailable ? 'btn-warning' : 'btn-success'
+                          }`}
+                        >
+                          {product.isAvailable ? 'Hide' : 'Show'}
+                        </button>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
-                    name="isAvailable"
-                    checked={productForm.isAvailable}
-                    onChange={handleProductFormChange}
-                    style={{ width: '18px', height: '18px' }}
-                  />
-                  <span style={{ fontWeight: '600' }}>Available for purchase</span>
-                </label>
-              </div>
+                        <button
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className="btn btn-danger"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    flex: 1,
-                    padding: '0.9rem',
-                    background: loading ? '#ccc' : '#667eea',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontWeight: '600',
-                    cursor: loading ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowProductModal(false)}
-                  style={{
-                    flex: 1,
-                    padding: '0.9rem',
-                    background: '#e5e7eb',
-                    color: '#333',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+   
+      {activeTab === 'orders' && (
+        <>
+          <h2 className="h5 fw-bold mb-3">Manage Orders</h2>
+
+          <div className="table-responsive bg-white rounded shadow-sm">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {orders.map(order => (
+                  <tr key={order._id}>
+
+                    <td className="fw-semibold">{order.orderId}</td>
+
+                    <td>
+                      <div>{order.customerInfo.name}</div>
+                      <small className="text-muted">
+                        {order.customerInfo.email}
+                      </small>
+                    </td>
+
+                    <td>{order.items.length} items</td>
+
+                    <td className="fw-semibold">
+                      ₹{order.totalAmount.toLocaleString()}
+                    </td>
+
+                    <td>
+                      <span className={`badge ${
+                        order.paymentInfo.paymentStatus === 'completed'
+                          ? 'bg-success'
+                          : 'bg-warning text-dark'
+                      }`}>
+                        {order.paymentInfo.paymentStatus}
+                      </span>
+                    </td>
+
+                    <td>
+                      <select
+                        className="form-select form-select-sm"
+                        value={order.orderStatus}
+                        onChange={(e) =>
+                          handleUpdateOrderStatus(order._id, e.target.value)
+                        }
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </td>
+
+                    <td>
+                      <button
+                        className="btn btn-sm btn-secondary"
+                        onClick={() => alert(JSON.stringify(order, null, 2))}
+                      >
+                        View
+                      </button>
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </>
       )}
     </div>
-  );
+
+    {/* ================= MODAL ================= */}
+    {showProductModal && (
+      <div className="modal d-block" tabIndex="-1">
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+
+            <div className="modal-header">
+              <h5 className="modal-title">
+                {editingProduct ? 'Edit Product' : 'Add Product'}
+              </h5>
+              <button
+                className="btn-close"
+                onClick={() => setShowProductModal(false)}
+              ></button>
+            </div>
+
+            <div className="modal-body">
+              <form onSubmit={handleSubmitProduct}>
+
+                <div className="mb-3">
+                  <label className="form-label">Product Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={productForm.name}
+                    onChange={handleProductFormChange}
+                    className="form-control"
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Description *</label>
+                  <textarea
+                    name="description"
+                    value={productForm.description}
+                    onChange={handleProductFormChange}
+                    className="form-control"
+                    rows="3"
+                    required
+                  />
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Price *</label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={productForm.price}
+                      onChange={handleProductFormChange}
+                      className="form-control"
+                    />
+                  </div>
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Stock *</label>
+                    <input
+                      type="number"
+                      name="stock"
+                      value={productForm.stock}
+                      onChange={handleProductFormChange}
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Category *</label>
+                  <select
+                    name="category"
+                    value={productForm.category}
+                    onChange={handleProductFormChange}
+                    className="form-select"
+                  >
+                    {categories.map(cat => (
+                      <option key={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-3 form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    name="isAvailable"
+                    checked={productForm.isAvailable}
+                    onChange={handleProductFormChange}
+                  />
+                  <label className="form-check-label">
+                    Available for purchase
+                  </label>
+                </div>
+
+                <div className="d-flex gap-2">
+                  <button className="btn btn-primary w-100" type="submit">
+                    {loading ? 'Saving...' : 'Save'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary w-100"
+                    onClick={() => setShowProductModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    )}
+
+  </div>
+);
 };
 
 export default AdminDashboard;

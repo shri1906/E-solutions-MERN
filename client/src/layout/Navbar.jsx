@@ -1,6 +1,7 @@
-import { useState } from 'react';
+ import  { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../App.css';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,15 +13,21 @@ const Navbar = () => {
     navigate('/');
   };
 
+  const isAdmin = user?.role === 'admin';
+
+  // 🔥 THIS HIDES NAVBAR COMPLETELY FOR ADMIN
+  if (isAdmin) return null;
+
   return (
     <nav className="navbar-custom">
-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="container d-flex align-items-center justify-content-between">
+        
         <Link className="navbar-brand-custom" to="/">
           <img src="/gauri.png" alt="Gauri E-Solutions" />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="d-none d-lg-flex" style={{ gap: '2.5rem', alignItems: 'center' }}>
+        {/* Desktop */}
+        <div className="d-none d-lg-flex align-items-center gap-4">
           {[
             { to: '/', label: 'Home' },
             { to: '/what-we-do', label: 'What We Do' },
@@ -28,39 +35,47 @@ const Navbar = () => {
             { to: '/products', label: 'Products' },
             { to: '/contact-us', label: 'Contact Us' },
           ].map(({ to, label }) => (
-            <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `nav-link-custom${isActive ? ' active' : ''}`}>
+            <NavLink
+              key={to}
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) =>
+                `nav-link-custom${isActive ? ' active' : ''}`
+              }
+            >
               {label}
             </NavLink>
           ))}
+
           {isAuthenticated() ? (
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <NavLink to="/profile" className={({ isActive }) => `nav-link-custom${isActive ? ' active' : ''}`}>
+            <div className="d-flex align-items-center gap-3">
+              <NavLink to="/profile" className="nav-link-custom">
                 My Account
               </NavLink>
-              <button
-                onClick={handleLogout}
-                className="btn-primary-custom"
-                style={{ padding: '0.6rem 1.4rem', fontSize: '0.82rem' }}
-              >
+              <button onClick={handleLogout} className="btn-primary-custom">
                 Logout
               </button>
             </div>
           ) : (
-            <Link to="/login" className="btn-primary-custom" style={{ padding: '0.6rem 1.4rem', fontSize: '0.82rem' }}>
+            <Link to="/login" className="btn-primary-custom">
               Login / Register
             </Link>
           )}
         </div>
 
-        {/* Mobile toggle */}
-        <button className="navbar-toggler-custom d-lg-none" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
+        {/* Mobile Toggle */}
+        <button
+          className="navbar-toggler-custom d-lg-none"
+          onClick={() => setMenuOpen(o => !o)}
+        >
           <span /><span /><span />
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile */}
       <div className="container">
         <div className={`mobile-nav-menu${menuOpen ? ' open' : ''}`}>
+          
           {[
             { to: '/', label: 'Home' },
             { to: '/what-we-do', label: 'What We Do' },
@@ -68,36 +83,32 @@ const Navbar = () => {
             { to: '/products', label: 'Products' },
             { to: '/contact-us', label: 'Contact Us' },
           ].map(({ to, label }) => (
-            <NavLink key={to} to={to} end={to === '/'} onClick={() => setMenuOpen(false)}
-              className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+            <NavLink
+              key={to}
+              to={to}
+              onClick={() => setMenuOpen(false)}
+              className="mobile-nav-link"
+            >
               {label}
             </NavLink>
           ))}
+
           {isAuthenticated() ? (
             <>
               <NavLink
                 to="/profile"
                 onClick={() => setMenuOpen(false)}
-                className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}
+                className="mobile-nav-link"
               >
                 My Account
               </NavLink>
+
               <button
                 onClick={() => {
                   handleLogout();
                   setMenuOpen(false);
                 }}
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  background: '#667eea',
-                  color: 'white',
-                  border: 'none',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  marginTop: '0.5rem'
-                }}
+                className="btn btn-primary w-100 mt-2"
               >
                 Logout
               </button>
@@ -106,12 +117,12 @@ const Navbar = () => {
             <NavLink
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="mobile-nav-link"
-              style={{ background: '#667eea', color: 'white', fontWeight: '600' }}
+              className="mobile-nav-link btn btn-primary text-white mt-2"
             >
               Login / Register
             </NavLink>
           )}
+
         </div>
       </div>
     </nav>
