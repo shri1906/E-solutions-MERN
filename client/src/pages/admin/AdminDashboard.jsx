@@ -110,7 +110,12 @@ const AdminDashboard = () => {
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
         .forEach((line, index) => {
-          featuresObject[`feature${index + 1}`] = line;
+          // remove "feature1:" if user typed it
+          const cleanedValue = line.includes(":")
+            ? line.split(":").slice(1).join(":").trim()
+            : line;
+
+          featuresObject[`feature${index + 1}`] = cleanedValue;
         });
 
       formData.append("features", JSON.stringify(featuresObject));

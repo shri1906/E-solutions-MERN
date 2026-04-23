@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 /* ================= COMMON REQUEST ================= */
 const apiRequest = async (
@@ -41,64 +41,64 @@ const apiRequest = async (
 
 /* ================= USER APIs ================= */
 export const userAPI = {
-  register: (userData) => apiRequest("/users/register", "POST", userData),
+  register: (userData) => apiRequest("/api/users/register", "POST", userData),
 
   login: (email, password) =>
-    apiRequest("/users/login", "POST", { email, password }),
+    apiRequest("/api/users/login", "POST", { email, password }),
 
-  getProfile: () => apiRequest("/users/profile"),
+  getProfile: () => apiRequest("/api/users/profile"),
 
-  updateProfile: (userData) => apiRequest("/users/profile", "PUT", userData),
+  updateProfile: (userData) => apiRequest("/api/users/profile", "PUT", userData),
 
-  getOrders: () => apiRequest("/users/orders"),
+  getOrders: () => apiRequest("/api/users/orders"),
 };
 
 /* ================= ADMIN APIs ================= */
 export const adminAPI = {
   login: (email, password) =>
-    apiRequest("/admin/login", "POST", { email, password }),
+    apiRequest("/api/admin/login", "POST", { email, password }),
 
   register: (username, email, password) =>
-    apiRequest("/admin/register", "POST", { username, email, password }),
+    apiRequest("/api/admin/register", "POST", { username, email, password }),
 
-  getProfile: () => apiRequest("/admin/profile", "GET", null, true),
+  getProfile: () => apiRequest("/api/admin/profile", "GET", null, true),
 };
 
 /* ================= PRODUCT APIs ================= */
 export const productAPI = {
   getAll: (filters = {}) => {
     const params = new URLSearchParams(filters);
-    return apiRequest(`/products?${params}`);
+    return apiRequest(`/api/products?${params}`);
   },
 
-  getById: (id) => apiRequest(`/products/${id}`),
+  getById: (id) => apiRequest(`/api/products/${id}`),
 
   // ✅ FILE UPLOAD SUPPORT
-  create: (productData) => apiRequest("/products", "POST", productData, true),
+  create: (productData) => apiRequest("/api/products", "POST", productData, true),
 
   update: (id, productData) =>
-    apiRequest(`/products/${id}`, "PUT", productData, true),
+    apiRequest(`/api/products/${id}`, "PUT", productData, true),
 
-  delete: (id) => apiRequest(`/products/${id}`, "DELETE", null, true),
+  delete: (id) => apiRequest(`/api/products/${id}`, "DELETE", null, true),
 
   toggleAvailability: (id) =>
-    apiRequest(`/products/${id}/availability`, "PATCH", null, true),
+    apiRequest(`/api/products/${id}/availability`, "PATCH", null, true),
 };
 
 /* ================= ORDER APIs ================= */
 export const orderAPI = {
   createRazorpayOrder: (amount) =>
-    apiRequest("/orders/create-razorpay-order", "POST", { amount }),
+    apiRequest("/api/orders/create-razorpay-order", "POST", { amount }),
 
   verifyPayment: (paymentData) =>
-    apiRequest("/orders/verify-payment", "POST", paymentData),
+    apiRequest("/api/orders/verify-payment", "POST", paymentData),
 
-  create: (orderData) => apiRequest("/orders", "POST", orderData),
+  create: (orderData) => apiRequest("/api/orders", "POST", orderData),
 
-  getAll: () => apiRequest("/orders", "GET", null, true),
+  getAll: () => apiRequest("/api/orders", "GET", null, true),
 
-  getById: (id) => apiRequest(`/orders/${id}`),
+  getById: (id) => apiRequest(`/api/orders/${id}`),
 
   updateStatus: (id, orderStatus) =>
-    apiRequest(`/orders/${id}/status`, "PUT", { orderStatus }, true),
+    apiRequest(`/api/orders/${id}/status`, "PUT", { orderStatus }, true),
 };

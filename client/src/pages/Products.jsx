@@ -3,7 +3,8 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { productAPI } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
-const BASE_URL = import.meta.env.BASE_URL;
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showCart, setShowCart] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const {
     cartItems,
     addToCart,
@@ -122,45 +124,53 @@ const Products = () => {
             {products.map((product) => (
               <div key={product._id} className="col-md-6 col-lg-4">
                 <div className="card h-100 shadow-sm border-0 product-card">
-                  {/* Image */}
-                  <div className="card-img-top position-relative product-img">
-                    <img
-                      src={`http://localhost:5000${product.image}`}
-                      alt={product.name}
-                      className="card-img-top"
-                      style={{ height: "200px", objectFit: "cover" }}
-                    />
-                    <span className="badge bg-primary position-absolute top-0 end-0 m-2">
-                      {product.category}
-                    </span>
-                  </div>
-
-                  {/* Body */}
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="fw-bold">{product.name}</h5>
-
-                    <p className="text-muted small flex-grow-1">
-                      {product.description.substring(0, 100)}...
-                    </p>
-
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className="fw-bold text-primary fs-5">
-                        ₹{product.price.toLocaleString()}
-                      </span>
-
-                      <span
-                        className={`small ${
-                          product.stock > 0 ? "text-success" : "text-danger"
-                        }`}
-                      >
-                        {product.stock > 0
-                          ? `${product.stock} in stock`
-                          : "Out of stock"}
+                  <div
+                    className="card h-100 shadow-sm border-0 product-card"
+                    onClick={() => setSelectedProduct(product)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {/* Image */}
+                    <div className="card-img-top position-relative product-img">
+                      <img
+                        src={`${BACKEND_URL}${product.image}`}
+                        alt={product.name}
+                        className="card-img-top"
+                        style={{ height: "200px", objectFit: "cover" }}
+                      />
+                      <span className="badge bg-primary position-absolute top-0 end-0 m-2">
+                        {product.category}
                       </span>
                     </div>
 
+                    {/* Body */}
+                    <div className="card-body d-flex flex-column">
+                      <h5 className="fw-bold">{product.name}</h5>
+
+                      <p className="text-muted small flex-grow-1">
+                        {product.description.substring(0, 100)}...
+                      </p>
+
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <span className="fw-bold text-primary fs-5">
+                          ₹{product.price.toLocaleString()}
+                        </span>
+
+                        <span
+                          className={`small ${
+                            product.stock > 0 ? "text-success" : "text-danger"
+                          }`}
+                        >
+                          {product.stock > 0
+                            ? `${product.stock} in stock`
+                            : "Out of stock"}
+                        </span>
+                      </div>
+                    </div>
                     <button
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
                       disabled={product.stock === 0}
                       className={`btn w-100 ${
                         product.stock === 0 ? "btn-secondary" : "btn-primary"
@@ -267,6 +277,92 @@ const Products = () => {
           <div
             className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50"
             onClick={() => setShowCart(false)}
+          ></div>
+        </>
+      )}
+      {selectedProduct && (
+        <>
+          <div className="modal d-block" tabIndex="-1">
+            <div className="modal-dialog modal-lg modal-dialog-centered">
+              <div className="modal-content">
+                {/* Header */}
+                <div className="modal-header">
+                  <h5 className="modal-title">{selectedProduct.name}</h5>
+                  <button
+                    className="btn-close"
+                    onClick={() => setSelectedProduct(null)}
+                  ></button>
+                </div>
+
+                {/* Body */}
+                <div className="modal-body">
+                  <div className="row">
+                    {/* Image */}
+                    <div className="col-md-6">
+                      <img
+                        src={`${BACKEND_URL}${selectedProduct.image}`}
+                        alt={selectedProduct.name}
+                        className="img-fluid rounded"
+                      />
+                    </div>
+
+                    {/* Details */}
+                    <div className="col-md-6">
+                      <p>{selectedProduct.description}</p>
+
+                      <h5 className="text-primary">
+                        ₹{selectedProduct.price.toLocaleString()}
+                      </h5>
+
+                      <p>
+                        <strong>Status:</strong>{" "}
+                        {selectedProduct.stock > 0
+                          ? `${selectedProduct.stock} in stock`
+                          : "Out of stock"}
+                      </p>
+
+                      {/* Features */}
+                      <h6>Features:</h6>
+                      <ul>
+                        {Object.values(selectedProduct.features || {}).map(
+                          (value, index) => (
+                            <li key={index}>{value}</li>
+                          ),
+                        )}
+                      </ul>
+
+                      {/* Specifications */}
+                      <h6>Specifications:</h6>
+                      <ul>
+                        {Object.entries(
+                          selectedProduct.specifications || {},
+                        ).map(([key, value]) => (
+                          <li key={key}>
+                            <strong>{key}:</strong> {value}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <button
+                        className="btn btn-primary w-100 mt-3"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(selectedProduct);
+                        }}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Overlay */}
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50"
+            onClick={() => setSelectedProduct(null)}
           ></div>
         </>
       )}
