@@ -23,6 +23,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", require("express").static("public/uploads"));
 
 // Routes
 app.use('/api/admin', adminRoutes);
@@ -35,28 +36,13 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({ message: err.message });
 });
-
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-module.exports = {
-express,
-dotenv,
-cors,
-connectDB,
-adminRoutes,
-productRoutes,
-orderRoutes,
-userRoutes,
-app,
-PORT
-};

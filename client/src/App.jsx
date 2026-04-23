@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Footer from "./layout/Footer";
 import Home from "./pages/Home";
@@ -16,10 +16,15 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
+  const location = useLocation();
+
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <AuthProvider>
       <CartProvider>
-        <Navbar />
+        {!isAdminRoute && <Navbar />}
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/who-we-are" element={<About />} />
@@ -29,10 +34,13 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+
+          {/* Admin */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
-        <Footer />
+
+        {!isAdminRoute && <Footer />}
       </CartProvider>
     </AuthProvider>
   );

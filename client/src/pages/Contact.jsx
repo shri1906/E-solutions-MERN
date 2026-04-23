@@ -26,15 +26,15 @@ const ContactUs = () => {
         <div className="text-center mb-5">
           <div className="section-label mx-auto mb-3" style={{justifyContent:'center'}}>Get In Touch</div>
           <h1 className="section-title">Let's Work Together</h1>
-          <p className="section-subtitle mx-auto" style={{textAlign:'center'}}>
-            Have a question or ready to start your digital transformation journey? We'd love to hear from you.
-          </p>
         </div>
 
-        <div className="row g-4 align-items-start rounded p-4 shadow-lg ">
+        <div className="row g-4 align-items-start rounded p-4 shadow-lg mx-1 ">
           {/* Info card */}
           <div className="col-md-5">
             <div className="contact-info-card" >
+              <p className="section-subtitle mx-auto" >
+            Have a question or ready to start your digital transformation journey? We would love to hear from you.
+          </p>
               <img src="/gauri.png" alt="Gauri E-Solutions" className="contact-logo" />
 
               <div className="contact-item">

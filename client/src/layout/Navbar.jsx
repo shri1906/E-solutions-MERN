@@ -54,7 +54,7 @@ const Navbar = () => {
             </div>
           ) : (
             <Link to="/login" className="btn-primary-custom">
-              Login / Register
+              LOGIN/REGISTER
             </Link>
           )}
         </div>
@@ -115,7 +115,7 @@ const Navbar = () => {
               onClick={() => setMenuOpen(false)}
               className="mobile-nav-link btn btn-primary text-white mt-2"
             >
-              Login / Register
+              LOGIN / REGISTER
             </NavLink>
           )}
 

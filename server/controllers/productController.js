@@ -1,4 +1,4 @@
-const Product = require('../models/Product.js');
+const Product = require("../models/Product.js");
 
 const getProducts = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ const getProducts = async (req, res) => {
       filter.category = category;
     }
 
-    if (available === 'true') {
+    if (available === "true") {
       filter.isAvailable = true;
     }
 
@@ -20,7 +20,6 @@ const getProducts = async (req, res) => {
   }
 };
 
-
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -28,7 +27,7 @@ const getProductById = async (req, res) => {
     if (product) {
       res.json(product);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -37,7 +36,32 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, image, stock, isAvailable, features, specifications } = req.body;
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+    const {
+      name,
+      description,
+      category,
+      isAvailable,
+    } = req.body;
+
+    const price = parseFloat(req.body.price);
+    const stock = parseInt(req.body.stock);
+
+    const image = req.file ? `/uploads/${req.file.filename}` : "";
+
+    // ✅ FIX features
+    const features = req.body["features[]"]
+      ? Array.isArray(req.body["features[]"])
+        ? req.body["features[]"]
+        : [req.body["features[]"]]
+      : [];
+
+    // ✅ FIX specifications
+    const specifications = req.body.specifications
+      ? JSON.parse(req.body.specifications)
+      : {};
 
     const product = await Product.create({
       name,
@@ -48,42 +72,58 @@ const createProduct = async (req, res) => {
       stock,
       isAvailable,
       features,
-      specifications
+      specifications,
     });
 
     res.status(201).json(product);
+
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
 
 const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, image, stock, isAvailable, features, specifications } = req.body;
-
     const product = await Product.findById(req.params.id);
 
-    if (product) {
-      product.name = name || product.name;
-      product.description = description || product.description;
-      product.price = price !== undefined ? price : product.price;
-      product.category = category || product.category;
-      product.image = image || product.image;
-      product.stock = stock !== undefined ? stock : product.stock;
-      product.isAvailable = isAvailable !== undefined ? isAvailable : product.isAvailable;
-      product.features = features || product.features;
-      product.specifications = specifications || product.specifications;
-
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: 'Product not found' });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
+
+    const image = req.file ? `/uploads/${req.file.filename}` : product.image;
+
+    const features = req.body["features[]"]
+      ? Array.isArray(req.body["features[]"])
+        ? req.body["features[]"]
+        : [req.body["features[]"]]
+      : product.features;
+
+    const specifications = req.body.specifications
+      ? JSON.parse(req.body.specifications)
+      : product.specifications;
+
+    product.name = req.body.name || product.name;
+    product.description = req.body.description || product.description;
+    product.price = req.body.price ? parseFloat(req.body.price) : product.price;
+    product.category = req.body.category || product.category;
+    product.image = image;
+    product.stock = req.body.stock ? parseInt(req.body.stock) : product.stock;
+    product.isAvailable =
+      req.body.isAvailable !== undefined
+        ? req.body.isAvailable
+        : product.isAvailable;
+
+    product.features = features;
+    product.specifications = specifications;
+
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const deleteProduct = async (req, res) => {
   try {
@@ -91,15 +131,14 @@ const deleteProduct = async (req, res) => {
 
     if (product) {
       await product.deleteOne();
-      res.json({ message: 'Product removed' });
+      res.json({ message: "Product removed" });
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const toggleProductAvailability = async (req, res) => {
   try {
@@ -110,19 +149,18 @@ const toggleProductAvailability = async (req, res) => {
       const updatedProduct = await product.save();
       res.json(updatedProduct);
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
 module.exports = {
-getProducts,
-getProductById,
-createProduct,
-updateProduct,
-deleteProduct,
-toggleProductAvailability
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  toggleProductAvailability,
 };

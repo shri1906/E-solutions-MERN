@@ -1,190 +1,105 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Helper function to get auth headers
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('adminToken');
-  return {
-    'Content-Type': 'application/json',
+/* ================= COMMON REQUEST ================= */
+const apiRequest = async (endpoint, method = "GET", data = null, isAdmin = false) => {
+  const token = isAdmin
+    ? localStorage.getItem("adminToken")
+    : localStorage.getItem("userToken");
+
+  const headers = {
     ...(token && { Authorization: `Bearer ${token}` })
   };
+
+  let body;
+
+  // ✅ Handle FormData vs JSON automatically
+  if (data instanceof FormData) {
+    body = data;
+  } else if (data) {
+    headers["Content-Type"] = "application/json";
+    body = JSON.stringify(data);
+  }
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method,
+    headers,
+    body
+  });
+
+  return response.json();
 };
 
-// Helper function to get user auth headers
-const getUserAuthHeaders = () => {
-  const token = localStorage.getItem('userToken');
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` })
-  };
-};
-
-// User APIs
+/* ================= USER APIs ================= */
 export const userAPI = {
-  register: async (userData) => {
-    const response = await fetch(`${API_URL}/users/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    return response.json();
-  },
+  register: (userData) =>
+    apiRequest("/users/register", "POST", userData),
 
-  login: async (email, password) => {
-    const response = await fetch(`${API_URL}/users/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    return response.json();
-  },
+  login: (email, password) =>
+    apiRequest("/users/login", "POST", { email, password }),
 
-  getProfile: async () => {
-    const response = await fetch(`${API_URL}/users/profile`, {
-      headers: getUserAuthHeaders()
-    });
-    return response.json();
-  },
+  getProfile: () =>
+    apiRequest("/users/profile"),
 
-  updateProfile: async (userData) => {
-    const response = await fetch(`${API_URL}/users/profile`, {
-      method: 'PUT',
-      headers: getUserAuthHeaders(),
-      body: JSON.stringify(userData)
-    });
-    return response.json();
-  },
+  updateProfile: (userData) =>
+    apiRequest("/users/profile", "PUT", userData),
 
-  getOrders: async () => {
-    const response = await fetch(`${API_URL}/users/orders`, {
-      headers: getUserAuthHeaders()
-    });
-    return response.json();
-  }
+  getOrders: () =>
+    apiRequest("/users/orders")
 };
 
-// Admin APIs
+/* ================= ADMIN APIs ================= */
 export const adminAPI = {
-  login: async (email, password) => {
-    const response = await fetch(`${API_URL}/admin/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    return response.json();
-  },
+  login: (email, password) =>
+    apiRequest("/admin/login", "POST", { email, password }),
 
-  register: async (username, email, password) => {
-    const response = await fetch(`${API_URL}/admin/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password })
-    });
-    return response.json();
-  },
+  register: (username, email, password) =>
+    apiRequest("/admin/register", "POST", { username, email, password }),
 
-  getProfile: async () => {
-    const response = await fetch(`${API_URL}/admin/profile`, {
-      headers: getAuthHeaders()
-    });
-    return response.json();
-  }
+  getProfile: () =>
+    apiRequest("/admin/profile", "GET", null, true)
 };
 
-// Product APIs
+/* ================= PRODUCT APIs ================= */
 export const productAPI = {
-  getAll: async (filters = {}) => {
+  getAll: (filters = {}) => {
     const params = new URLSearchParams(filters);
-    const response = await fetch(`${API_URL}/products?${params}`);
-    return response.json();
+    return apiRequest(`/products?${params}`);
   },
 
-  getById: async (id) => {
-    const response = await fetch(`${API_URL}/products/${id}`);
-    return response.json();
-  },
+  getById: (id) =>
+    apiRequest(`/products/${id}`),
 
-  create: async (productData) => {
-    const response = await fetch(`${API_URL}/products`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(productData)
-    });
-    return response.json();
-  },
+  // ✅ Supports FormData (image upload)
+  create: (productData) =>
+    apiRequest("/products", "POST", productData, true),
 
-  update: async (id, productData) => {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(productData)
-    });
-    return response.json();
-  },
+  update: (id, productData) =>
+    apiRequest(`/products/${id}`, "PUT", productData, true),
 
-  delete: async (id) => {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-      method: 'DELETE',
-      headers: getAuthHeaders()
-    });
-    return response.json();
-  },
+  delete: (id) =>
+    apiRequest(`/products/${id}`, "DELETE", null, true),
 
-  toggleAvailability: async (id) => {
-    const response = await fetch(`${API_URL}/products/${id}/availability`, {
-      method: 'PATCH',
-      headers: getAuthHeaders()
-    });
-    return response.json();
-  }
+  toggleAvailability: (id) =>
+    apiRequest(`/products/${id}/availability`, "PATCH", null, true)
 };
 
-// Order APIs
+/* ================= ORDER APIs ================= */
 export const orderAPI = {
-  createRazorpayOrder: async (amount) => {
-    const response = await fetch(`${API_URL}/orders/create-razorpay-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount })
-    });
-    return response.json();
-  },
+  createRazorpayOrder: (amount) =>
+    apiRequest("/orders/create-razorpay-order", "POST", { amount }),
 
-  verifyPayment: async (paymentData) => {
-    const response = await fetch(`${API_URL}/orders/verify-payment`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(paymentData)
-    });
-    return response.json();
-  },
+  verifyPayment: (paymentData) =>
+    apiRequest("/orders/verify-payment", "POST", paymentData),
 
-  create: async (orderData) => {
-    const response = await fetch(`${API_URL}/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    });
-    return response.json();
-  },
+  create: (orderData) =>
+    apiRequest("/orders", "POST", orderData),
 
-  getAll: async () => {
-    const response = await fetch(`${API_URL}/orders`, {
-      headers: getAuthHeaders()
-    });
-    return response.json();
-  },
+  getAll: () =>
+    apiRequest("/orders", "GET", null, true),
 
-  getById: async (id) => {
-    const response = await fetch(`${API_URL}/orders/${id}`);
-    return response.json();
-  },
+  getById: (id) =>
+    apiRequest(`/orders/${id}`),
 
-  updateStatus: async (id, orderStatus) => {
-    const response = await fetch(`${API_URL}/orders/${id}/status`, {
-      method: 'PUT',
-      headers: getAuthHeaders(),
-      body: JSON.stringify({ orderStatus })
-    });
-    return response.json();
-  }
+  updateStatus: (id, orderStatus) =>
+    apiRequest(`/orders/${id}/status`, "PUT", { orderStatus }, true)
 };

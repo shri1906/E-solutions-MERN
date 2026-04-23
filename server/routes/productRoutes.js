@@ -8,6 +8,7 @@ const {
   toggleProductAvailability
 } = require('../controllers/productController.js');
 const { protect } = require('../middleware/auth.js');
+const upload = require("../middleware/upload.js");
 
 const router = express.Router();
 
@@ -16,8 +17,8 @@ router.get('/', getProducts);
 router.get('/:id', getProductById);
 
 // Protected routes (Admin only)
-router.post('/', protect, createProduct);
-router.put('/:id', protect, updateProduct);
+router.post('/', protect, upload.single('image'), createProduct);
+router.put('/:id', protect, upload.single('image'), updateProduct);
 router.delete('/:id', protect, deleteProduct);
 router.patch('/:id/availability', protect, toggleProductAvailability);
 

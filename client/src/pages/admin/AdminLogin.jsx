@@ -42,9 +42,8 @@ const AdminLogin = () => {
 
  return (
   <div className="d-flex align-items-center justify-content-center py-4">
-    
     <div className="card shadow-lg border-0 p-4 p-md-5 auth-card">
-      
+      <img src="/gauri.png" alt="Logo" className="mb-4 w-50 mx-auto"/>
       {/* Header */}
       <div className="text-center mb-4">
         <h1 className="fw-bold">Admin Login</h1>
