@@ -79,7 +79,9 @@ server/
 │   ├── orderController.js
 │   └── productController.js
 ├── middleware/
-│   └── auth.js
+│   ├── auth.js
+|   ├── upload.js
+|   └── userAuth.js
 ├── models/
 │   ├── Admin.js
 │   ├── Order.js
