@@ -162,92 +162,127 @@ const Profile = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    disabled={!editing}
-                    required
-                    className="form-control"
-                  />
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-user"></i>
+                    </span>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      required
+                      className="form-control"
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={!editing}
-                    required
-                    className="form-control"
-                  />
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-envelope"></i>
+                    </span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      required
+                      className="form-control"
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    disabled={!editing}
-                    required
-                    className="form-control"
-                  />
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fas fa-mobile"></i>
+                    </span>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      required
+                      className="form-control"
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-semibold">
                     Street Address
                   </label>
-                  <input
-                    type="text"
-                    name="street"
-                    value={formData.street}
-                    onChange={handleChange}
-                    disabled={!editing}
-                    className="form-control"
-                  />
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="fa-solid fa-map-location-dot"></i>
+                    </span>
+                    <input
+                      type="text"
+                      name="street"
+                      value={formData.street}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      className="form-control"
+                    />
+                  </div>
                 </div>
 
                 <div className="row">
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">City</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      disabled={!editing}
-                      className="form-control"
-                    />
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fa-solid fa-city"></i>
+                      </span>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        disabled={!editing}
+                        className="form-control"
+                      />
+                    </div>
                   </div>
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">State</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleChange}
-                      disabled={!editing}
-                      className="form-control"
-                    />
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fa-solid fa-flag-usa"></i>
+                      </span>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        disabled={!editing}
+                        className="form-control"
+                      />
+                    </div>
                   </div>
 
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Pincode</label>
-                    <input
-                      type="text"
-                      name="pincode"
-                      value={formData.pincode}
-                      onChange={handleChange}
-                      disabled={!editing}
-                      className="form-control"
-                    />
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fa-solid fa-location-dot"></i>
+                      </span>
+                      <input
+                        type="text"
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        disabled={!editing}
+                        className="form-control"
+                      />
+                    </div>
                   </div>
                 </div>
 

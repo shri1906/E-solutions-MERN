@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
@@ -15,37 +15,37 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('userToken');
-    const userData = localStorage.getItem('userData');
-    
+    const token = sessionStorage.getItem("userToken");
+    const userData = sessionStorage.getItem("userData");
+
     if (token && userData) {
       setUser(JSON.parse(userData));
     }
+
     setLoading(false);
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem('userToken', userData.token);
-    localStorage.setItem('userData', JSON.stringify(userData));
+    sessionStorage.setItem("userToken", userData.token);
+    sessionStorage.setItem("userData", JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('cart'); // Clear cart on logout
+    sessionStorage.removeItem("userToken");
+    sessionStorage.removeItem("userData");
+    sessionStorage.removeItem("cart");
     setUser(null);
   };
 
   const updateUser = (updatedData) => {
     const newUserData = { ...user, ...updatedData };
-    localStorage.setItem('userData', JSON.stringify(newUserData));
+    sessionStorage.setItem("userData", JSON.stringify(newUserData));
     setUser(newUserData);
   };
 
   const isAuthenticated = () => {
-    return !!user;
+    return !!user || !!sessionStorage.getItem("userToken");
   };
 
   return (
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         updateUser,
-        isAuthenticated
+        isAuthenticated,
       }}
     >
       {children}

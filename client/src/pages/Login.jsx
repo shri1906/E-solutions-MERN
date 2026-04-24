@@ -173,7 +173,7 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn btn-primary w-100"
+                    className="btn-login"
                   >
                     {loading ? "Signing in..." : "Sign In"}
                   </button>
@@ -358,7 +358,7 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn btn-primary w-100"
+                    className="btn-login"
                   >
                     {loading ? "Creating Account..." : "Create Account"}
                   </button>

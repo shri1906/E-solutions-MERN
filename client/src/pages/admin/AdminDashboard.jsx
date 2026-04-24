@@ -86,9 +86,76 @@ const AdminDashboard = () => {
     }
   };
 
+  // const handleSubmitProduct = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     formData.append("name", productForm.name);
+  //     formData.append("description", productForm.description);
+  //     formData.append("price", parseFloat(productForm.price));
+  //     formData.append("category", productForm.category);
+  //     formData.append("stock", parseInt(productForm.stock));
+  //     formData.append("isAvailable", productForm.isAvailable);
+
+  //     if (productForm.image instanceof File) {
+  //       formData.append("image", productForm.image);
+  //     }
+
+  //     const featuresObject = {};
+
+  //     productForm.features
+  //       ?.split("\n")
+  //       .map((line) => line.trim())
+  //       .filter((line) => line.length > 0)
+  //       .forEach((line, index) => {
+  //         // remove "feature1:" if user typed it
+  //         const cleanedValue = line.includes(":")
+  //           ? line.split(":").slice(1).join(":").trim()
+  //           : line;
+
+  //         featuresObject[`feature${index + 1}`] = cleanedValue;
+  //       });
+
+  //     formData.append("features", JSON.stringify(featuresObject));
+
+  //     const specsObject = {};
+
+  //     productForm.specifications
+  //       ?.split("\n")
+  //       .map((line) => line.trim())
+  //       .filter((line) => line.length > 0 && line.includes(":"))
+  //       .forEach((line) => {
+  //         const [key, ...rest] = line.split(":");
+  //         specsObject[key.trim()] = rest.join(":").trim();
+  //       });
+
+  //     formData.append("specifications", JSON.stringify(specsObject));
+
+  //     if (editingProduct) {
+  //       await productAPI.update(editingProduct._id, formData);
+  //     } else {
+  //       await productAPI.create(formData);
+  //     }
+
+  //     resetProductForm();
+  //     fetchProducts();
+  //     setShowProductModal(false);
+  //   } catch (error) {
+  //     toast.error("Error saving product: " + error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const toastId = toast.loading(
+      editingProduct ? "Updating product..." : "Adding product...",
+    );
 
     try {
       const formData = new FormData();
@@ -111,7 +178,6 @@ const AdminDashboard = () => {
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
         .forEach((line, index) => {
-          // remove "feature1:" if user typed it
           const cleanedValue = line.includes(":")
             ? line.split(":").slice(1).join(":").trim()
             : line;
@@ -134,26 +200,25 @@ const AdminDashboard = () => {
 
       formData.append("specifications", JSON.stringify(specsObject));
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`  ${key}:`, value);
-      }
-
       if (editingProduct) {
         await productAPI.update(editingProduct._id, formData);
+        toast.success("Product updated successfully!", { id: toastId });
       } else {
         await productAPI.create(formData);
+        toast.success("Product added successfully!", { id: toastId });
       }
 
       resetProductForm();
       fetchProducts();
       setShowProductModal(false);
     } catch (error) {
-      toast.error("Error saving product: " + error.message);
+      toast.error("Error saving product: " + error.message, {
+        id: toastId,
+      });
     } finally {
       setLoading(false);
     }
   };
-
   const handleEditProduct = (product) => {
     setEditingProduct(product);
 
@@ -420,7 +485,9 @@ const AdminDashboard = () => {
                       <td>
                         <button
                           className="btn btn-sm btn-secondary"
-                          onClick={() => toast.success(JSON.stringify(order, null, 2))}
+                          onClick={() =>
+                            toast.success(JSON.stringify(order, null, 2))
+                          }
                         >
                           View
                         </button>

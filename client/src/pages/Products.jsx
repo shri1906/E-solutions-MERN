@@ -5,6 +5,7 @@ import { productAPI } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const Products = () => {
@@ -81,7 +82,7 @@ const Products = () => {
               onClick={() => setShowCart(!showCart)}
               className="btn btn-primary position-relative fw-semibold"
             >
-              🛒 Cart ({getCartCount()})
+              <i className="fa-solid fa-cart-plus"></i> Cart ({getCartCount()})
               {getCartCount() > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {getCartCount()}
