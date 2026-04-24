@@ -47,12 +47,12 @@ const Products = () => {
       const data = await productAPI.getAll(filters);
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      alert(error.response?.data?.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
   };
-  console.log(products);
+
   const handleAddToCart = (product) => {
     if (!isAuthenticated()) {
       // Redirect to login with return path
