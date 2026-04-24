@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { userAPI } from "../utils/api";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const { user, isAuthenticated, updateUser, logout } = useAuth();
@@ -80,13 +81,13 @@ const Profile = () => {
 
       if (data.token) {
         updateUser(data);
-        alert("Profile updated successfully!");
+        toast.success("Profile updated successfully!");
         setEditing(false);
       } else if (data.message) {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      alert(
+      toast.error(
         error.response?.data?.message ||
           "An error occurred while updating profile",
       );
@@ -110,10 +111,10 @@ const Profile = () => {
   return (
     <div className="min-vh-100 bg-light">
       {/* HEADER */}
-      <div className="bg-primary text-white py-4">
+      <div className="py-4">
         <div className="container">
           <h1 className="fw-bold mb-1">My Account</h1>
-          <p className="mb-0 opacity-75">Manage your profile and orders</p>
+          <p className="mb-0">Manage your profile and orders</p>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../utils/api';
+import toast from 'react-hot-toast';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -8,7 +9,6 @@ const AdminLogin = () => {
     email: '',
     password: ''
   });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -20,7 +20,6 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
     try {
@@ -31,10 +30,10 @@ const AdminLogin = () => {
         localStorage.setItem('adminData', JSON.stringify(data));
         navigate('/admin/dashboard');
       } else if (data.message) {
-        setError(data.message);
+        toast.success(data.message);
       }
     } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred. Please try again.');
+      toast.error(error.response?.data?.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,13 +50,6 @@ const AdminLogin = () => {
           Sign in to access the admin panel
         </p>
       </div>
-
-      {/* Error */}
-      {error && (
-        <div className="alert alert-danger text-center">
-          {error}
-        </div>
-      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit}>

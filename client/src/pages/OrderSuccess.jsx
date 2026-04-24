@@ -14,16 +14,9 @@ const OrderSuccess = () => {
             <div className="card border-0 shadow-lg rounded-4 text-center p-4">
               <div className="mb-4">
                 <div
-                  className="mx-auto d-flex align-items-center justify-content-center"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "50%",
-                    backgroundColor: "#d1f7e8",
-                    fontSize: "40px",
-                  }}
+                  className="mx-auto d-flex align-items-center justify-content-center order-success-icon"
                 >
-                  ✅
+                  ✔
                 </div>
               </div>
               <h2 className="fw-bold text-success mb-3">

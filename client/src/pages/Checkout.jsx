@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { orderAPI } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
@@ -61,7 +62,7 @@ const Checkout = () => {
     e.preventDefault();
     
     if (cartItems.length === 0) {
-      alert('Your cart is empty!');
+      toast.error('Your cart is empty!');
       return;
     }
 
@@ -71,7 +72,7 @@ const Checkout = () => {
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
-        alert('Failed to load Razorpay SDK. Please check your internet connection.');
+        toast.error('Failed to load Razorpay SDK. Please check your internet connection.');
         setLoading(false);
         return;
       }
@@ -133,14 +134,14 @@ const Checkout = () => {
               clearCart();
               
               // Navigate to success page
-              alert('Payment successful! Order ID: ' + order.orderId);
+              toast.success('Payment successful! Order ID: ' + order.orderId);
               navigate('/order-success', { state: { order } });
             } else {
-              alert('Payment verification failed. Please contact support.');
+              toast.error('Payment verification failed. Please contact support.');
             }
           } catch (error) {
             console.error('Error creating order:', error);
-            alert('Failed to create order. Please contact support.');
+            toast.error('Failed to create order. Please contact support.');
           } finally {
             setLoading(false);
           }
@@ -164,7 +165,7 @@ const Checkout = () => {
       paymentObject.open();
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Failed to initiate payment. Please try again.');
+      toast.error('Failed to initiate payment. Please try again.');
       setLoading(false);
     }
   };

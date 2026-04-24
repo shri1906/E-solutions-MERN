@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { productAPI } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
@@ -47,7 +48,7 @@ const Products = () => {
       const data = await productAPI.getAll(filters);
       setProducts(data);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to load products");
+      toast.error(error.response?.data?.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
@@ -60,7 +61,7 @@ const Products = () => {
       return;
     }
     addToCart(product);
-    alert(`${product.name} added to cart!`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (

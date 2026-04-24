@@ -2,14 +2,13 @@ import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { userAPI } from "../utils/api";
-
+import toast from "react-hot-toast";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-
+  
   const [isLogin, setIsLogin] = useState(true);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [loginForm, setLoginForm] = useState({
@@ -47,7 +46,6 @@ const Login = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -57,10 +55,10 @@ const Login = () => {
         login(data);
         navigate(from, { replace: true });
       } else if (data.message) {
-        setError(data.message);
+        toast.success(data.message);
       }
     } catch (error) {
-      setError(error.response?.data?.message || "Login failed. Please try again.");
+    toast.error(error.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -68,15 +66,14 @@ const Login = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (registerForm.password !== registerForm.confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     if (registerForm.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
@@ -103,10 +100,10 @@ const Login = () => {
         login(data);
         navigate(from, { replace: true });
       } else if (data.message) {
-        setError(data.message);
+        toast.success(data.message);
       }
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed. Please try again.");
+      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -132,12 +129,6 @@ const Login = () => {
                     : "Register to start shopping"}
                 </p>
               </div>
-
-              {/* Error */}
-              {error && (
-                <div className="alert alert-danger text-center">{error}</div>
-              )}
-
               {/* LOGIN FORM */}
               {isLogin ? (
                 <form onSubmit={handleLoginSubmit}>
@@ -383,7 +374,6 @@ const Login = () => {
                   <button
                     onClick={() => {
                       setIsLogin(!isLogin);
-                      setError("");
                     }}
                     className="btn btn-link p-0 fw-semibold"
                   >

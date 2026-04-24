@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { productAPI, orderAPI } from "../../utils/api";
+import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const AdminDashboard = () => {
       const data = await productAPI.getAll();
       setProducts(data);
     } catch (error) {
-      alert("Error fetching products: " + error.message);
+      toast.error("Error fetching products: " + error.message);
     }
   };
 
@@ -65,7 +66,7 @@ const AdminDashboard = () => {
       const data = await orderAPI.getAll();
       setOrders(data);
     } catch (error) {
-      alert("Error fetching orders: " + error.message);
+      toast.error("Error fetching orders: " + error.message);
     }
   };
 
@@ -147,7 +148,7 @@ const AdminDashboard = () => {
       fetchProducts();
       setShowProductModal(false);
     } catch (error) {
-      alert("Error saving product: " + error.message);
+      toast.error("Error saving product: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -183,10 +184,10 @@ const AdminDashboard = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         await productAPI.delete(id);
-        alert("Product deleted successfully!");
+        toast.success("Product deleted successfully!");
         fetchProducts();
       } catch (error) {
-        alert("Error deleting product: " + error.message);
+        toast.error("Error deleting product: " + error.message);
       }
     }
   };
@@ -196,17 +197,17 @@ const AdminDashboard = () => {
       await productAPI.toggleAvailability(id);
       fetchProducts();
     } catch (error) {
-      alert("Error toggling availability: " + error.message);
+      toast.error("Error toggling availability: " + error.message);
     }
   };
 
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
       await orderAPI.updateStatus(orderId, status);
-      alert("Order status updated!");
+      toast.success("Order status updated!");
       fetchOrders();
     } catch (error) {
-      alert("Error updating order status: " + error.message);
+      toast.error("Error updating order status: " + error.message);
     }
   };
 
@@ -419,7 +420,7 @@ const AdminDashboard = () => {
                       <td>
                         <button
                           className="btn btn-sm btn-secondary"
-                          onClick={() => alert(JSON.stringify(order, null, 2))}
+                          onClick={() => toast.success(JSON.stringify(order, null, 2))}
                         >
                           View
                         </button>

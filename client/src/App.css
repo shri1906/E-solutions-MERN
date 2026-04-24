@@ -804,6 +804,14 @@
   border-radius: 16px;
 }
 
+.order-success-icon{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #d1f7e8;
+  font-size: 40px;
+}
+
 /* ─── MOBILE ─── */
 .mobile-nav-menu {
   display: none;
