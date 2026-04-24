@@ -345,7 +345,7 @@ For testing, use Razorpay test mode credentials:
   image: String,
   stock: Number,
   isAvailable: Boolean,
-  features: [String],
+  features: Map,
   specifications: Map,
   timestamps: true
 }
