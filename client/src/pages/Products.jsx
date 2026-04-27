@@ -5,7 +5,6 @@ import { productAPI } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const Products = () => {
@@ -57,11 +56,18 @@ const Products = () => {
 
   const handleAddToCart = (product) => {
     if (!isAuthenticated()) {
-      // Redirect to login with return path
       navigate("/login", { state: { from: { pathname: "/products" } } });
       return;
     }
-    addToCart(product);
+    const existingItem = cartItems.find((item) => item._id === product._id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+
+    if (currentQty >= product.stock) {
+      toast.error("Maximum available quantity reached");
+      return;
+    }
+
+     addToCart({ ...product, stock: product.stock });
     toast.success(`${product.name} added to cart!`);
   };
 
@@ -80,7 +86,7 @@ const Products = () => {
 
             <button
               onClick={() => setShowCart(!showCart)}
-              className="btn btn-primary position-relative fw-semibold"
+              className="btn-primary-cart position-relative fw-semibold"
             >
               <i className="fa-solid fa-cart-plus"></i> Cart ({getCartCount()})
               {getCartCount() > 0 && (
@@ -95,7 +101,6 @@ const Products = () => {
 
       {/* Content */}
       <div className="container py-5">
-        {/* Category Filter */}
         <div className="mb-4 d-flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
@@ -112,8 +117,6 @@ const Products = () => {
             </button>
           ))}
         </div>
-
-        {/* Loading */}
         {loading ? (
           <div className="text-center py-5 text-muted">Loading products...</div>
         ) : products.length === 0 ? (
@@ -121,7 +124,7 @@ const Products = () => {
             No products available
           </div>
         ) : (
-          /* Products Grid */
+
           <div className="row g-4">
             {products.map((product) => (
               <div key={product._id} className="col-md-6 col-lg-4">
@@ -139,7 +142,7 @@ const Products = () => {
                         className="card-img-top"
                         style={{ height: "200px", objectFit: "cover" }}
                       />
-                      <span className="badge bg-primary position-absolute top-0 end-0 m-2">
+                      <span className="category-tag position-absolute top-0 end-0 m-2">
                         {product.category}
                       </span>
                     </div>
@@ -153,7 +156,7 @@ const Products = () => {
                       </p>
 
                       <div className="d-flex justify-content-between align-items-center mb-3">
-                        <span className="fw-bold text-primary fs-5">
+                        <span className="fw-bold price-tag fs-5">
                           ₹{product.price.toLocaleString()}
                         </span>
 
@@ -174,8 +177,10 @@ const Products = () => {
                         handleAddToCart(product);
                       }}
                       disabled={product.stock === 0}
-                      className={`btn w-100 ${
-                        product.stock === 0 ? "btn-secondary" : "btn-primary"
+                      className={`${
+                        product.stock === 0
+                          ? "btn-secondary"
+                          : "btn-primary-cart"
                       }`}
                     >
                       {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
@@ -194,14 +199,14 @@ const Products = () => {
           <div className="cart-sidebar bg-white shadow position-fixed top-0 end-0 h-100 d-flex flex-column">
             {/* Header */}
             <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
-              <h5 className="mb-0 fw-bold">Your Cart</h5>
+              <h5 className="mb-0 fw-bold">
+                <i className="fa-solid fa-cart-plus"></i> Your Cart
+              </h5>
               <button
                 onClick={() => setShowCart(false)}
                 className="btn-close"
               ></button>
             </div>
-
-            {/* Items */}
             <div className="flex-grow-1 overflow-auto p-3">
               {cartItems.length === 0 ? (
                 <div className="text-center text-muted py-5">
@@ -213,14 +218,15 @@ const Products = () => {
                     key={item._id}
                     className="d-flex gap-3 mb-3 border-bottom pb-3"
                   >
-                    <div
+                    <img
+                      alt={item.name}
+                      src={`${BACKEND_URL}${item.image}`}
                       className="cart-img"
-                      style={{ backgroundImage: `url(${item.image})` }}
                     />
 
                     <div className="flex-grow-1">
                       <h6 className="fw-semibold mb-1">{item.name}</h6>
-                      <p className="text-primary fw-bold mb-2">₹{item.price}</p>
+                      <p className="price-tag fw-bold mb-2">₹{item.price}</p>
 
                       <div className="d-flex align-items-center gap-2">
                         <button
@@ -235,9 +241,14 @@ const Products = () => {
                         <span className="fw-semibold">{item.quantity}</span>
 
                         <button
-                          onClick={() =>
-                            updateQuantity(item._id, item.quantity + 1)
-                          }
+                          disabled={item.quantity >= item.stock}
+                          onClick={() => {
+                            if (item.quantity >= item.stock) {
+                              toast.error("Maximum available quantity reached");
+                              return;
+                            }
+                            updateQuantity(item._id, item.quantity + 1);
+                          }}
                           className="btn btn-sm btn-outline-secondary"
                         >
                           +
@@ -261,13 +272,13 @@ const Products = () => {
               <div className="p-3 border-top">
                 <div className="d-flex justify-content-between fw-bold mb-3">
                   <span>Total:</span>
-                  <span className="text-primary">
+                  <span className="price-tag">
                     ₹{getCartTotal().toLocaleString()}
                   </span>
                 </div>
 
-                <Link to="/checkout" onClick={() => setShowCart(false)}>
-                  <button className="btn btn-primary w-100">
+                <Link className="checkout-link" to="/checkout" onClick={() => setShowCart(false)}>
+                  <button className="btn-primary-cart w-100">
                     Proceed to Checkout
                   </button>
                 </Link>
@@ -289,7 +300,7 @@ const Products = () => {
               <div className="modal-content">
                 {/* Header */}
                 <div className="modal-header">
-                  <h5 className="modal-title">{selectedProduct.name}</h5>
+                  <h5 className="modal-title ">{selectedProduct.name}</h5>
                   <button
                     className="btn-close"
                     onClick={() => setSelectedProduct(null)}
@@ -310,14 +321,16 @@ const Products = () => {
 
                     {/* Details */}
                     <div className="col-md-6">
-                      <p>{selectedProduct.description}</p>
+                      <p className="product-desc">
+                        {selectedProduct.description}
+                      </p>
 
-                      <h5 className="text-primary">
+                      <h5 className="price-tag">
                         ₹{selectedProduct.price.toLocaleString()}
                       </h5>
 
                       <p>
-                        <strong>Status:</strong>{" "}
+                        <strong>Status:</strong>
                         {selectedProduct.stock > 0
                           ? `${selectedProduct.stock} in stock`
                           : "Out of stock"}
@@ -346,7 +359,7 @@ const Products = () => {
                       </ul>
 
                       <button
-                        className="btn btn-primary w-100 mt-3"
+                        className="btn-primary-cart w-100 mt-3"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleAddToCart(selectedProduct);
