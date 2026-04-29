@@ -24,16 +24,15 @@ const AdminLogin = () => {
 
     try {
       const data = await adminAPI.login(formData.email, formData.password);
-      
       if (data.token) {
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminData', JSON.stringify(data));
         navigate('/admin/dashboard');
-      } else if (data.message) {
         toast.success(data.message);
       }
+      
     } catch (error) {
-      toast.error(error.response?.data?.message || 'An error occurred. Please try again.');
+      toast.error(error.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

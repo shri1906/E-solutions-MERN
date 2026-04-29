@@ -922,6 +922,7 @@
   width: 400px;
   max-width: 100%;
   z-index: 1050;
+  background-color: #fffafa;
 }
 
 .cart-img {
