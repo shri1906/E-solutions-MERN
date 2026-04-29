@@ -222,6 +222,25 @@
   box-shadow: 0 4px 24px var(--accent-glow);
   text-decoration: none;
 }
+.btn-secondary-cart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background: grey;
+  color: #fff !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 1rem;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
 .category-tag {
   color: #fff !important;
   font-family: var(--font-display);

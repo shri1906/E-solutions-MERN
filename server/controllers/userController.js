@@ -35,7 +35,8 @@ const registerUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
-        token: generateToken(user._id)
+        token: generateToken(user._id),
+        message: 'User registered successfully !'
       });
     }
   } catch (error) {
@@ -50,6 +51,10 @@ const loginUser = async (req, res) => {
     // Find user by email
     const user = await User.findOne({ email });
 
+    if(!user) {
+      return res.status(401).json({ message: 'Invalid email !' });
+    }
+
     if (user && (await user.comparePassword(password))) {
       res.json({
         _id: user._id,
@@ -57,10 +62,11 @@ const loginUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
-        token: generateToken(user._id)
+        token: generateToken(user._id),
+        message: 'Login successful !'
       });
     } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+      res.status(401).json({ message: 'Invalid password !' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

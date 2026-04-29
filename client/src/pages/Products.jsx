@@ -179,7 +179,7 @@ const Products = () => {
                       disabled={product.stock === 0}
                       className={`${
                         product.stock === 0
-                          ? "btn-secondary"
+                          ? "btn-secondary-cart"
                           : "btn-primary-cart"
                       }`}
                     >

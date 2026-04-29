@@ -7,7 +7,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  
+
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -54,11 +54,10 @@ const Login = () => {
       if (data.token) {
         login(data);
         navigate(from, { replace: true });
-      } else if (data.message) {
         toast.success(data.message);
       }
     } catch (error) {
-    toast.error(error.response?.data?.message || "Login failed. Please try again.");
+      toast.error(error.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -103,7 +102,10 @@ const Login = () => {
         toast.success(data.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
+      toast.error(
+        error.response?.data?.message ||
+          "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
