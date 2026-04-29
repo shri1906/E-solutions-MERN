@@ -11,6 +11,8 @@ const AdminDashboard = () => {
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const [productForm, setProductForm] = useState({
     name: "",
@@ -86,69 +88,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // const handleSubmitProduct = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     const formData = new FormData();
-
-  //     formData.append("name", productForm.name);
-  //     formData.append("description", productForm.description);
-  //     formData.append("price", parseFloat(productForm.price));
-  //     formData.append("category", productForm.category);
-  //     formData.append("stock", parseInt(productForm.stock));
-  //     formData.append("isAvailable", productForm.isAvailable);
-
-  //     if (productForm.image instanceof File) {
-  //       formData.append("image", productForm.image);
-  //     }
-
-  //     const featuresObject = {};
-
-  //     productForm.features
-  //       ?.split("\n")
-  //       .map((line) => line.trim())
-  //       .filter((line) => line.length > 0)
-  //       .forEach((line, index) => {
-  //         // remove "feature1:" if user typed it
-  //         const cleanedValue = line.includes(":")
-  //           ? line.split(":").slice(1).join(":").trim()
-  //           : line;
-
-  //         featuresObject[`feature${index + 1}`] = cleanedValue;
-  //       });
-
-  //     formData.append("features", JSON.stringify(featuresObject));
-
-  //     const specsObject = {};
-
-  //     productForm.specifications
-  //       ?.split("\n")
-  //       .map((line) => line.trim())
-  //       .filter((line) => line.length > 0 && line.includes(":"))
-  //       .forEach((line) => {
-  //         const [key, ...rest] = line.split(":");
-  //         specsObject[key.trim()] = rest.join(":").trim();
-  //       });
-
-  //     formData.append("specifications", JSON.stringify(specsObject));
-
-  //     if (editingProduct) {
-  //       await productAPI.update(editingProduct._id, formData);
-  //     } else {
-  //       await productAPI.create(formData);
-  //     }
-
-  //     resetProductForm();
-  //     fetchProducts();
-  //     setShowProductModal(false);
-  //   } catch (error) {
-  //     toast.error("Error saving product: " + error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -485,9 +424,10 @@ const AdminDashboard = () => {
                       <td>
                         <button
                           className="btn btn-sm btn-secondary"
-                          onClick={() =>
-                            toast.success(JSON.stringify(order, null, 2))
-                          }
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setShowOrderModal(true);
+                          }}
                         >
                           View
                         </button>
@@ -642,6 +582,90 @@ const AdminDashboard = () => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Order Details Modal */}
+      {showOrderModal && selectedOrder && (
+        <div className="modal d-block" tabIndex="-1">
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Order Details</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowOrderModal(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                {/* BASIC INFO */}
+                <h6 className="fw-bold mb-2">Order Info</h6>
+                <p>
+                  <strong>Order ID:</strong> {selectedOrder.orderId}
+                </p>
+                <p>
+                  <strong>Status:</strong> {selectedOrder.orderStatus}
+                </p>
+                <p>
+                  <strong>Total:</strong> ₹{selectedOrder.totalAmount}
+                </p>
+
+                <hr />
+
+                {/* CUSTOMER */}
+                <h6 className="fw-bold mb-2">Customer</h6>
+                <p>
+                  <strong>Name:</strong> {selectedOrder.customerInfo.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedOrder.customerInfo.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {selectedOrder.customerInfo.phone}
+                </p>
+
+                <hr />
+
+                {/* ITEMS */}
+                <h6 className="fw-bold mb-2">Items</h6>
+                {selectedOrder.items.map((item, i) => (
+                  <div key={i} className="border rounded p-2 mb-2">
+                    <p>
+                      <strong>Product:</strong> {item.name}
+                    </p>
+                    <p>
+                      <strong>Qty:</strong> {item.quantity}
+                    </p>
+                    <p>
+                      <strong>Price:</strong> ₹{item.price}
+                    </p>
+                  </div>
+                ))}
+
+                <hr />
+
+                {/* PAYMENT */}
+                <h6 className="fw-bold mb-2">Payment</h6>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {selectedOrder.paymentInfo.paymentStatus}
+                </p>
+                <p>
+                  <strong>Method:</strong>{" "}
+                  {selectedOrder.paymentInfo.paymentMethod}
+                </p>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowOrderModal(false)}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
