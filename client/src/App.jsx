@@ -25,7 +25,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         {!isAdminRoute && <Navbar />}
-
+<h1>PATH: {location.pathname}</h1>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/who-we-are" element={<About />} />
