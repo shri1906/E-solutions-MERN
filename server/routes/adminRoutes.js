@@ -5,7 +5,7 @@ const { protect } = require('../middleware/auth.js');
 const router = express.Router();
 
 // Admin authentication routes
-router.post('/register', registerAdmin); // Remove in production or add super-admin protection
+router.post('/register', registerAdmin); 
 router.post('/login', loginAdmin);
 router.get('/profile', protect, getAdminProfile);
 

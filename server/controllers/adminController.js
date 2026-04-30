@@ -23,7 +23,8 @@ const registerAdmin = async (req, res) => {
     const admin = await Admin.create({
       username,
       email,
-      password
+      password,
+      role: 'admin' 
     });
 
     if (admin) {
