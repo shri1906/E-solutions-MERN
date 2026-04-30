@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { productAPI, orderAPI } from "../../utils/api";
+import { productAPI, orderAPI, adminAPI } from "../../utils/api";
 import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
@@ -13,7 +13,18 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-
+  const [adminProfile, setAdminProfile] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+  });
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [productForm, setProductForm] = useState({
     name: "",
     description: "",
@@ -39,6 +50,7 @@ const AdminDashboard = () => {
     checkAuth();
     fetchProducts();
     fetchOrders();
+    fetchAdminProfile();
   }, []);
 
   const checkAuth = () => {
@@ -48,6 +60,61 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchAdminProfile = async () => {
+    try {
+      const data = JSON.parse(sessionStorage.getItem("adminData"));
+      setAdminProfile({
+        username: data?.username || "",
+        email: data?.email || "",
+        password: "",
+        role: data?.role || "",
+      });
+    } catch (error) {
+      toast.error(error.message || "Failed to load admin profile");
+    }
+  };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setAdminProfile({ ...adminProfile, [name]: value });
+  };
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+
+    try {
+      await adminAPI.updateProfile(adminProfile);
+      toast.success("Profile updated successfully");
+      sessionStorage.setItem("adminData", JSON.stringify(adminProfile));
+    } catch (error) {
+      toast.error(error.message || "Error updating profile");
+    }
+  };
+  const handleAdminChange = (e) => {
+    const { name, value } = e.target;
+    setNewAdmin({ ...newAdmin, [name]: value });
+  };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+
+    try {
+      await adminAPI.register(
+        newAdmin.name, // username
+        newAdmin.email,
+        newAdmin.password,
+      );
+
+      toast.success("Admin created successfully");
+
+      setNewAdmin({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   const handleLogout = () => {
     sessionStorage.removeItem("adminToken");
     sessionStorage.removeItem("adminData");
@@ -261,6 +328,22 @@ const AdminDashboard = () => {
               Orders ({orders.length})
             </button>
           </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === "profile" ? "active" : ""}`}
+              onClick={() => setActiveTab("profile")}
+            >
+              Profile
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              className={`nav-link ${activeTab === "createAdmin" ? "active" : ""}`}
+              onClick={() => setActiveTab("createAdmin")}
+            >
+              Create Admin
+            </button>
+          </li>
         </ul>
 
         {activeTab === "products" && (
@@ -438,6 +521,102 @@ const AdminDashboard = () => {
               </table>
             </div>
           </>
+        )}
+        {activeTab === "profile" && (
+          <div className="bg-white p-4 rounded shadow-sm">
+            <h2 className="h5 fw-bold mb-3">Admin Profile</h2>
+
+            <form onSubmit={handleUpdateProfile}>
+              <div className="mb-3">
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={adminProfile.username}
+                  onChange={handleProfileChange}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={adminProfile.email}
+                  onChange={handleProfileChange}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={adminProfile.password}
+                  onChange={handleProfileChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="mb-3">
+                <label>Role</label>
+                <input
+                  name="role"
+                  value={adminProfile.role}
+                  className="form-control"
+                  readOnly
+                />
+              </div>
+
+              <button className="btn btn-primary">Update Profile</button>
+            </form>
+          </div>
+        )}
+        {activeTab === "createAdmin" && (
+          <div className="bg-white p-4 rounded shadow-sm">
+            <h2 className="h5 fw-bold mb-3">Create New Admin</h2>
+
+            <form onSubmit={handleCreateAdmin}>
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={newAdmin.name}
+                  onChange={handleAdminChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={newAdmin.email}
+                  onChange={handleAdminChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={newAdmin.password}
+                  onChange={handleAdminChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <button className="btn btn-success">Create Admin</button>
+            </form>
+          </div>
         )}
       </div>
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerAdmin, loginAdmin, getAdminProfile } = require('../controllers/adminController.js');
+const { registerAdmin, loginAdmin, getAdminProfile, updateAdminProfile } = require('../controllers/adminController.js');
 const { protect } = require('../middleware/auth.js');
 
 const router = express.Router();
@@ -8,5 +8,6 @@ const router = express.Router();
 router.post('/register', registerAdmin); 
 router.post('/login', loginAdmin);
 router.get('/profile', protect, getAdminProfile);
+router.put('/update-profile', protect, updateAdminProfile); 
 
 module.exports = router;

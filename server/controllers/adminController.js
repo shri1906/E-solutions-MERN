@@ -78,11 +78,40 @@ const getAdminProfile = async (req, res) => {
   }
 };
 
+const updateAdminProfile = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin._id);
+
+    if (admin) {
+      admin.username = req.body.username || admin.username;
+      admin.email = req.body.email || admin.email;
+      
+      if (req.body.password) {
+        admin.password = req.body.password;
+      } 
+      const updatedAdmin = await admin.save();
+
+      res.json({
+        _id: updatedAdmin._id,
+        username: updatedAdmin.username,
+        email: updatedAdmin.email,
+        role: updatedAdmin.role,
+        token: generateToken(updatedAdmin._id),
+        message: 'Profile updated successfully !'
+      });
+    } else {
+      res.status(404).json({ message: 'Admin not found !' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 module.exports = {
 generateToken,
 registerAdmin,
 loginAdmin,
 getAdminProfile,
-
+updateAdminProfile
 };

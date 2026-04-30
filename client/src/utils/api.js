@@ -62,6 +62,9 @@ export const adminAPI = {
     apiRequest("/api/admin/register", "POST", { username, email, password }),
 
   getProfile: () => apiRequest("/api/admin/profile", "GET", null, true),
+
+  updateProfile: (adminData) =>
+    apiRequest("/api/admin/update-profile", "PUT", adminData, true),
 };
 
 /* ================= PRODUCT APIs ================= */
