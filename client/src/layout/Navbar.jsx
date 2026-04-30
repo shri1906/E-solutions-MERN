@@ -48,12 +48,12 @@ const Navbar = () => {
               <NavLink to="/profile" className="nav-link-custom">
                 My Account
               </NavLink>
-              <button onClick={handleLogout} className="btn-primary-custom">
+              <button onClick={handleLogout} className="btn-primary-custom py-2">
                 Logout
               </button>
             </div>
           ) : (
-            <Link to="/login" className="btn-primary-custom">
+            <Link to="/login" className="btn-primary-custom py-2">
               Login/Register
             </Link>
           )}
@@ -104,7 +104,7 @@ const Navbar = () => {
                   handleLogout();
                   setMenuOpen(false);
                 }}
-                className="btn btn-primary w-100 mt-2"
+                className="btn-login w-100 mt-2"
               >
                 Logout
               </button>

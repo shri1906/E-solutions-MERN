@@ -115,7 +115,8 @@ const updateUserProfile = async (req, res) => {
         email: updatedUser.email,
         phone: updatedUser.phone,
         address: updatedUser.address,
-        token: generateToken(updatedUser._id)
+        token: generateToken(updatedUser._id),
+        message: 'Profile updated successfully !'
       });
     } else {
       res.status(404).json({ message: 'User not found' });

@@ -175,6 +175,32 @@
   box-shadow: 0 4px 24px var(--accent-glow);
   text-decoration: none;
 }
+.btn-category-active{
+  background: var(--accent);
+  color: #fff !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  margin: 10px 0px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-category{
+  background: grey;
+  color: #fff !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
 .btn-primary-custom:hover {
   background: var(--accent-secondary);
@@ -245,8 +271,9 @@
   color: #fff !important;
   font-family: var(--font-display);
   background: var(--accent);
-  padding: 0 3px;
-  border-radius: 3px;
+  padding: 0 5px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 .price-tag {
   color: var(--accent);

@@ -48,7 +48,7 @@ const Products = () => {
       const data = await productAPI.getAll(filters);
       setProducts(data);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to load products");
+      toast.error(error.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
@@ -101,16 +101,16 @@ const Products = () => {
 
       {/* Content */}
       <div className="container py-5">
-        <div className="mb-4 d-flex flex-wrap gap-2">
+        <div className="mb-4 d-flex flex-wrap">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat === "All" ? "" : cat)}
-              className={`btn rounded-pill ${
+              className={`rounded-pill ${
                 selectedCategory === cat ||
                 (selectedCategory === "" && cat === "All")
-                  ? "btn-primary"
-                  : "btn-outline-secondary"
+                  ? "btn-category-active"
+                  : "btn-category"
               }`}
             >
               {cat}

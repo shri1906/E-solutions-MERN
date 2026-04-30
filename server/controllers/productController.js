@@ -57,10 +57,10 @@ const createProduct = async (req, res) => {
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
           features = parsed;
         } else {
-          console.log("❌ Features is not a valid object");
+          console.log("Features is not a valid object");
         }
       } catch (err) {
-        console.log("❌ Features JSON parse error:", err);
+        console.log("Features JSON parse error:", err);
       }
     }
 

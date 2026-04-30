@@ -46,6 +46,7 @@ const Profile = () => {
   const fetchOrders = async () => {
     try {
       const data = await userAPI.getOrders();
+      console.log("Fetched orders:", data);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -83,7 +84,6 @@ const Profile = () => {
         updateUser(data);
         toast.success("Profile updated successfully!");
         setEditing(false);
-      } else if (data.message) {
         toast.error(data.message);
       }
     } catch (error) {
@@ -152,7 +152,7 @@ const Profile = () => {
                 {!editing && (
                   <button
                     onClick={() => setEditing(true)}
-                    className="btn btn-primary btn-sm"
+                    className="btn-primary-custom py-1"
                   >
                     Edit Profile
                   </button>
@@ -291,7 +291,7 @@ const Profile = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="btn btn-primary w-100"
+                      className="btn-login w-100"
                     >
                       {loading ? "Saving..." : "Save Changes"}
                     </button>
@@ -330,7 +330,7 @@ const Profile = () => {
                 </p>
                 <button
                   onClick={() => navigate("/products")}
-                  className="btn btn-primary"
+                  className="btn-login"
                 >
                   Start Shopping
                 </button>
