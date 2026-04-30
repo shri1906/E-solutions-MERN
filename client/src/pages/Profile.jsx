@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { userAPI } from "../utils/api";
 import toast from "react-hot-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const Profile = () => {
   const { user, isAuthenticated, updateUser, logout } = useAuth();
@@ -46,7 +48,6 @@ const Profile = () => {
   const fetchOrders = async () => {
     try {
       const data = await userAPI.getOrders();
-      console.log("Fetched orders:", data);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -87,10 +88,7 @@ const Profile = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "An error occurred while updating profile",
-      );
+      toast.error(error.message || "An error occurred while updating profile");
     } finally {
       setLoading(false);
     }
@@ -108,12 +106,52 @@ const Profile = () => {
     return colors[status] || "#6b7280";
   };
 
+  const downloadReceipt = (order) => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(16);
+    doc.text("TAX INVOICE", 80, 15);
+    
+    doc.setFontSize(10);
+    doc.text(`Order ID: ${order.orderId}`, 10, 30);
+    doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 10, 36);
+    doc.text(`Status: ${order.orderStatus}`, 10, 42);
+
+    doc.text("Customer Details:", 10, 55);
+    doc.text(`Name: ${order.customerInfo?.name || ""}`, 10, 62);
+    doc.text(`Email: ${order.customerInfo?.email || ""}`, 10, 68);
+
+    const tableData = order.items.map((item, index) => [
+      index + 1,
+      item.name,
+      item.quantity,
+      `Rs. ${item.price}`, 
+      `Rs. ${item.price * item.quantity}`,
+    ]);
+
+    autoTable(doc, {
+      startY: 80,
+      head: [["S.No", "Item", "Qty", "Price", "Total"]],
+      body: tableData,
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`Total Amount: Rs. ${order.totalAmount}`, 140, finalY);
+    doc.setFontSize(10);
+    doc.text("Payment Details:", 10, finalY + 10);
+    doc.text(`Status: ${order.paymentInfo?.paymentStatus}`, 10, finalY + 16);
+    
+    doc.save(`Invoice_${order.orderId}.pdf`);
+  };
+
   return (
     <div className="min-vh-100 bg-light">
       {/* HEADER */}
       <div className="py-4">
         <div className="container">
-          <h1 className="fw-bold mb-1">My Account</h1>
+          <h1 className="fw-bold mb-1">Welcome, {formData.name}</h1>
           <p className="mb-0">Manage your profile and orders</p>
         </div>
       </div>
@@ -394,6 +432,16 @@ const Profile = () => {
                           ₹{order.totalAmount.toLocaleString()}
                         </span>
                       </div>
+                      {order.orderStatus === "delivered" && (
+                        <div className="mt-3 text-end">
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => downloadReceipt(order)}
+                          >
+                            Download Receipt
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

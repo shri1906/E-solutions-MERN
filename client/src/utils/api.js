@@ -9,10 +9,10 @@ const apiRequest = async (
   data = null,
   isAdmin = false,
 ) => {
-  const token = isAdmin
-    ? localStorage.getItem("adminToken")
-    : localStorage.getItem("userToken");
-
+ const token = isAdmin
+  ? sessionStorage.getItem("adminToken")
+  : sessionStorage.getItem("userToken");
+  
   const headers = {
     ...(token && { Authorization: `Bearer ${token}` }),
   };
