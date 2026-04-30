@@ -42,15 +42,15 @@ const AdminDashboard = () => {
   }, []);
 
   const checkAuth = () => {
-    const token = localStorage.getItem("adminToken");
+    const token = sessionStorage.getItem("adminToken");
     if (!token) {
       navigate("/admin/login");
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminData");
+    sessionStorage.removeItem("adminToken");
+    sessionStorage.removeItem("adminData");
     navigate("/admin/login");
   };
 

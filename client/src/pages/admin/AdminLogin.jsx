@@ -25,8 +25,8 @@ const AdminLogin = () => {
     try {
       const data = await adminAPI.login(formData.email, formData.password);
       if (data.token) {
-        localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('adminData', JSON.stringify(data));
+        sessionStorage.setItem('adminToken', data.token);
+        sessionStorage.setItem('adminData', JSON.stringify(data));
         navigate('/admin/dashboard');
         toast.success(data.message);
       }
